@@ -1,10 +1,9 @@
 "use client";
 
-import { TestCase, TestCaseDraft } from "@/lib/types";
+import { TestCase } from "@/app/_lib/types";
 import React, { useState } from "react";
 import EditTestCase from "./EditTestCase";
-import { Button, Grid } from "@mantine/core";
-import test from "node:test";
+import { Button, Container, Grid, Title } from "@mantine/core";
 import TestCaseCard from "./TestCaseCard";
 
 interface TestCasesProps {
@@ -16,12 +15,17 @@ const TestCases: React.FC<TestCasesProps> = ({ testCases }) => {
 
   return (
     <div>
+      <Title order={1} mb="sm">
+        Test Cases
+      </Title>
       {isEditing ? (
-        <EditTestCase onCancel={() => setIsEditing(false)} />
+        <Container size="xs">
+          <EditTestCase onCancel={() => setIsEditing(false)} />
+        </Container>
       ) : (
         <>
-          <Button onClick={() => setIsEditing(true)}>Add Test Case</Button>
-          <Grid mt={15}>
+          <Button onClick={() => setIsEditing(true)}>Add</Button>
+          <Grid mt="sm">
             {testCases.map((testCase) => (
               <Grid.Col span={{ base: 12, md: 6 }} key={testCase.id}>
                 <TestCaseCard testCase={testCase} />

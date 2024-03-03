@@ -1,6 +1,5 @@
-import EditTestCase from "../components/EditTestCase";
-import { TestCase } from "@/lib/types/TestCase";
-import TestCases from "../components/TestCases";
+import { TestCase, TestCaseDraft } from "@/app/_lib/types/TestCase";
+import TestCases from "../../_components/TestCases";
 
 async function getData(): Promise<TestCase[]> {
   return new Promise((resolve) => {
@@ -8,6 +7,7 @@ async function getData(): Promise<TestCase[]> {
       resolve([
         {
           id: 1,
+          dateCreatedUTC: new Date(),
           utterance: "Hello",
           context: {
             setting: "In a store",
@@ -31,6 +31,7 @@ async function getData(): Promise<TestCase[]> {
         },
         {
           id: 2,
+          dateCreatedUTC: new Date(),
           utterance: "I'm looking for a book",
           context: {
             setting: "In a store",
@@ -54,26 +55,8 @@ async function getData(): Promise<TestCase[]> {
 
 const Cases: React.FC = async () => {
   const cases = await getData();
-  const blankTestCase: TestCase = {
-    id: 1,
-    utterance: "",
-    context: {
-      setting: "",
-      tone: "",
-      conversationType: "",
-    },
-    bio: {
-      name: "",
-      age: 0,
-      aboutMe: "",
-    },
-    goodCompletions: [],
-  };
-  return (
-    <>
-      <TestCases testCases={cases} />
-    </>
-  );
+
+  return <TestCases testCases={cases} />;
 };
 
 export default Cases;

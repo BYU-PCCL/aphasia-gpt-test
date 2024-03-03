@@ -1,5 +1,6 @@
 export interface TestCase {
   id: number;
+  dateCreatedUTC: Date;
   context: Context;
   bio: Bio;
   utterance: string;
