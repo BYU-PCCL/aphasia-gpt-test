@@ -3,9 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "flask-dev": "set FLASK_DEBUG=1 && pip install -r requirements.txt && python -m flask --app api/index run -p 5328",
-    "next-dev": "next dev",
-    "dev": "concurrently \"pnpm run next-dev\" \"pnpm run flask-dev\"",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,7 +15,6 @@
     "@mantine/hooks": "^7.6.1",
     "@tabler/icons-react": "^2.47.0",
     "autoprefixer": "^10.4.18",
-    "concurrently": "^8.2.2",
     "firebase": "^10.8.1",
     "next": "14.1.1",
     "react": "^18",

@@ -8,14 +8,18 @@ import google.cloud.firestore
 initialize_app()
 
 
-@https_fn.on_request()
-def addmessage(req: https_fn.Request) -> https_fn.Response:
+@https_fn.on_call()
+def addmessage(req: https_fn.CallableRequest):
     """Take the text parameter passed to this HTTP endpoint and insert it into
     a new document in the messages collection."""
     # Grab the text parameter.
-    original = req.args.get("text")
+    # original = req.args.get("text")
+    data = req.data
+    print("data: ", data)
+    original = data['text']
     if original is None:
-        return https_fn.Response("No text parameter provided", status=400)
+        raise https_fn.HttpsError(code=https_fn.FunctionsErrorCode.INVALID_ARGUMENT,
+                                  message="No text parameter provided")
 
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
@@ -24,7 +28,8 @@ def addmessage(req: https_fn.Request) -> https_fn.Response:
         "messages").add({"original": original})
 
     # Send back a message that we've successfully written the message
-    return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    # return https_fn.Response(f"Message with ID {doc_ref.id} added.")
+    return {"message": f"Message with ID {doc_ref.id} added."}
 
 
 @firestore_fn.on_document_created(document="messages/{pushId}")
