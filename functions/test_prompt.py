@@ -2,6 +2,7 @@ import datetime
 import json
 from dotenv import load_dotenv
 import numpy as np
+import torch
 from angle_emb import AnglE
 from openai import OpenAI
 from data_classes import CaseScore, Prompt, Context, Bio, TestCase, TestResults
@@ -13,14 +14,22 @@ OPENAI_MODEL = "gpt-3.5-turbo"
 TEMPERATURE = 0.7
 MAX_TOKENS = 50
 NUM_RESPONSES = 4
-TEST_CASES_FILE_PATH = "input/test_cases.json"
-RESULTS_DIR_NAME = "results"
 EMBEDDING_MODEL_NAME = 'WhereIsAI/UAE-Large-V1'
 
 
 def embed_texts(texts: list[str]) -> np.ndarray:
-    angle = AnglE.from_pretrained(
-        EMBEDDING_MODEL_NAME, pooling_strategy='cls').cuda()
+    # Check if the model exists
+    try:
+        angle = AnglE.from_pretrained(
+            EMBEDDING_MODEL_NAME, pooling_strategy='cls')
+    except Exception as e:
+        raise ValueError(
+            f"Failed to load the model '{EMBEDDING_MODEL_NAME}'. Error: {str(e)}")
+
+    # Check if CUDA is available, if not use CPU
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    angle = angle.to(device)
+
     embeddings = angle.encode(texts, to_numpy=True)
     # np.save("./embs.npy", embeddings)  # TODO: Not sure what we want to do here
     return embeddings
@@ -54,7 +63,6 @@ def get_gpt_completion(prompt: str) -> list[str]:
 
 def test_prompt(prompt: Prompt, test_cases: list[TestCase]) -> TestResults:
     '''Executes each test case against the given prompt and prints the score'''
-
     scores: list[CaseScore] = []
     for test_case in test_cases:
         gpt_completions = get_gpt_completion(prompt.prompt.format(

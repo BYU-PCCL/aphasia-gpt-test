@@ -1,5 +1,5 @@
 import json
-from firebase_functions import firestore_fn, https_fn
+from firebase_functions import firestore_fn, https_fn, options
 from firebase_admin import initialize_app, firestore
 import google.cloud.firestore
 from data_classes import Bio, Prompt, TestCase, Context
@@ -8,13 +8,18 @@ from test_prompt import test_prompt
 initialize_app()
 
 
-@https_fn.on_call()
-def testPrompt(req: https_fn.CallableRequest):
+@https_fn.on_request(
+    cors=options.CorsOptions(
+        cors_origins=["http://localhost:3000"],
+        cors_methods=["POST"]
+    )
+)
+def testPrompt(req: https_fn.Request) -> https_fn.Response:
     """Take the prompt parameter and run the test cases against it."""
-    prompt = req.data['prompt']
+    data = req.get_json()
+    prompt = data['prompt'] if 'prompt' in data else None
     if prompt is None:
-        raise https_fn.HttpsError(code=https_fn.FunctionsErrorCode.INVALID_ARGUMENT,
-                                  message="No prompt parameter provided")
+        return https_fn.Response("No prompt parameter provided", status=400)
 
     test_cases_json = json.loads('''
         [
@@ -64,60 +69,11 @@ def testPrompt(req: https_fn.CallableRequest):
         ]
       ''')
 
-    # test_cases = [TestCase(**test_case) for test_case in test_cases_json]
     test_cases = [TestCase(id=case['id'], utterance=case['utterance'], context=Context(
         **case['context']), bio=Bio(**case['bio']), good_completions=case['good_completions']) for case in test_cases_json]
-    test_cases = test_cases[:1]  # TODO: DELETE ME
-
-    # Prepare the
-    print("test cases: ", test_cases)
+    test_cases = test_cases[:1]  # DELETE ME
 
     prompt_obj = Prompt(1, prompt)
     test_results = test_prompt(prompt_obj, test_cases)
-
-    return test_results.to_dict()
-
-
-@https_fn.on_call()
-def addmessage(req: https_fn.CallableRequest):
-    """Take the text parameter passed to this HTTP endpoint and insert it into
-    a new document in the messages collection."""
-    # Grab the text parameter.
-    # original = req.args.get("text")
-    data = req.data
-    print("data: ", data)
-    original = data['text']
-    if original is None:
-        raise https_fn.HttpsError(code=https_fn.FunctionsErrorCode.INVALID_ARGUMENT,
-                                  message="No text parameter provided")
-
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-
-    # Push the new message into Cloud Firestore using the Firebase Admin SDK.
-    _, doc_ref = firestore_client.collection(
-        "messages").add({"original": original})
-
-    # Send back a message that we've successfully written the message
-    # return https_fn.Response(f"Message with ID {doc_ref.id} added.")
-    return {"message": f"Message with ID {doc_ref.id} added."}
-
-
-@firestore_fn.on_document_created(document="messages/{pushId}")
-def makeuppercase(event: firestore_fn.Event[firestore_fn.DocumentSnapshot | None]) -> None:
-    """Listens for new documents to be added to /messages. If the document has
-    an "original" field, creates an "uppercase" field containg the contents of
-    "original" in upper case."""
-
-    # Get the value of "original" if it exists.
-    if event.data is None:
-        return
-    try:
-        original = event.data.get("original")
-    except KeyError:
-        # No "original" field, so do nothing.
-        return
-
-    # Set the "uppercase" field.
-    print(f"Uppercasing {event.params['pushId']}: {original}")
-    upper = original.upper()
-    event.data.reference.update({"uppercase": upper})
+    test_results_dict = test_results.to_dict()
+    return https_fn.Response(json.dumps(test_results_dict))

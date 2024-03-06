@@ -1,65 +1,121 @@
 "use client";
-import { Button } from "@mantine/core";
+import { Button, Container, JsonInput, Stack, Textarea } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { useState } from "react";
-import { httpsCallable } from "firebase/functions";
-import { firebaseCloudFunctions } from "../../../firebase";
+
+const params = [
+  "name",
+  "age",
+  "about_me",
+  "setting",
+  "conversation_type",
+  "tone",
+  "utterance",
+];
+
+async function callTestPrompt(prompt: string) {
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:5000/personal-aphasia-testing/us-central1/testPrompt",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: prompt }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 const Experiments: React.FC = () => {
   const [result, setResult] = useState("");
-  const addMessage = httpsCallable(firebaseCloudFunctions, "addmessage");
-  const testPrompt = httpsCallable(firebaseCloudFunctions, "testPrompt");
+  const [loading, setLoading] = useState(false);
+  const form = useForm({
+    initialValues: {
+      prompt: "",
+    },
+    validate: {
+      prompt: (value) => {
+        if (!value.trim()) {
+          return "Prompt is required";
+        }
+        const missingParams: string[] = [];
+        paramStrings.forEach((param) => {
+          if (!value.includes(param)) {
+            missingParams.push(param);
+          }
+        });
+        return missingParams.length > 0
+          ? `Missing parameters: ${missingParams.join(", ")}`
+          : null;
+      },
+    },
+    validateInputOnBlur: true,
+  });
+
+  const paramStrings: string[] = params.map((param) => `{${param}}`);
 
   const handleOnClick = async () => {
-    const messageText = "uppercasemeplease";
-    addMessage({ text: messageText })
-      .then((result) => {
-        // Read result of the Cloud Function.
-        const data = result.data as { message: string }; // Type assertion
-        const sanitizedMessage = data.message;
-        setResult(sanitizedMessage);
-      })
-      .catch((error) => {
-        // Getting the Error details.
-        const code = error.code;
-        const message = error.message;
-        const details = error.details;
-        console.log("error code and details: ", code, details);
-        // ...
-      });
-  };
-
-  const handleOnClick2 = async () => {
-    // to testPrompt message, passing in getPrompt() as the prompt parameter
+    setLoading(true);
     const prompt = getPrompt();
-    testPrompt({ prompt: prompt })
-      .then((result) => {
-        // Read result of the Cloud Function.
-        const data = result.data as { message: string }; // Type assertion
-        const sanitizedMessage = data.message;
-        setResult(sanitizedMessage);
-      })
-      .catch((error) => {
-        // Getting the Error details.
-        const code = error.code;
-        const message = error.message;
-        const details = error.details;
-        console.log("error code and details: ", code, details);
-        // ...
-      });
+    const testResultsObj: object = await callTestPrompt(prompt);
+    setResult(JSON.stringify(testResultsObj));
+    setLoading(false);
   };
 
   return (
-    <>
-      <Button onClick={handleOnClick2}>Test API Call</Button>
-      <div>Result: {result}</div>
-    </>
+    <Container size="sm">
+      <form onSubmit={form.onSubmit(() => handleOnClick())}>
+        <Stack gap="sm">
+          <Textarea
+            label="Prompt"
+            description={`Prompt template must use the following parameters: ${paramStrings.join(
+              ", "
+            )}`}
+            placeholder="Enter your prompt here"
+            withAsterisk
+            minRows={10}
+            maxRows={20}
+            autosize
+            {...form.getInputProps("prompt")}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            loading={loading}
+            disabled={!form.isValid()}
+          >
+            Run Test Cases
+          </Button>
+        </Stack>
+        {result && (
+          <>
+            <JsonInput
+              value={result}
+              label="Results"
+              formatOnBlur={true}
+              autosize
+            />
+          </>
+        )}
+      </form>
+    </Container>
   );
 };
 
 export default Experiments;
 
 function getPrompt(): string {
-  return `You are an expert in communication disorders, specifically Broca's aphasia. Your task is to transform an utterance from a person with Broca's aphasia into a grammatically correct sentence and predict the next several words they will say. Do NOT request any additional information or context or ask any questions. Only provide the transformed predicted utterances. Examples:
+  return `Hi. You are an expert in communication disorders, specifically Broca's aphasia. Your task is to transform an utterance from a person with Broca's aphasia into a grammatically correct sentence and predict the next several words they will say. Do NOT request any additional information or context or ask any questions. Only provide the transformed predicted utterances. Examples:
     1. "Walk dog" => "I will take the dog for a walk"
     2. "Book book two table" => "There are two books on the table"
     3. "i want take kids" => "I want to take the kids to the park"
