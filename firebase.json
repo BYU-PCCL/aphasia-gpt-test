@@ -1,7 +1,7 @@
 {
   "emulators": {
     "functions": {
-      "port": 5001
+      "port": 5000
     },
     "firestore": {
       "port": 8080
@@ -21,12 +21,7 @@
     {
       "source": "functions",
       "codebase": "default",
-      "ignore": [
-        "venv",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log"
-      ]
+      "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
   ],
   "firestore": {

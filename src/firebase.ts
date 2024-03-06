@@ -16,5 +16,5 @@ export const firebaseCloudFunctions = getFunctions(firebaseApp);
 
 if (process.env.NODE_ENV !== "production") {
   // Connect to the local emulator if not in production (https://firebase.google.com/docs/emulator-suite/connect_functions)
-  connectFunctionsEmulator(firebaseCloudFunctions, "localhost", 5001);
+  connectFunctionsEmulator(firebaseCloudFunctions, "localhost", 5000);
 }
