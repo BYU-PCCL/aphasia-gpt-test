@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJdBSp9giT5OldEJSmJI6BtJwyYB2oJl0",
@@ -12,6 +12,7 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseDb = getDatabase(firebaseApp);
 
 // if (process.env.NODE_ENV !== "production") {
 //   // Connect to the local emulator if not in production (https://firebase.google.com/docs/emulator-suite/connect_functions)

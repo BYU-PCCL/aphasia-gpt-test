@@ -1,154 +1,201 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextInput,
   Textarea,
   Button,
-  Title,
   Stack,
-  Paper,
   Group,
+  Text,
   Checkbox,
+  Fieldset,
 } from "@mantine/core";
-import { TestCaseDraft, Context, Bio } from "@/app/_lib/types";
+import { TestCase } from "@/app/_lib/types";
+import { isNotEmpty, useForm } from "@mantine/form";
+
+async function setTestCase(testCase: TestCase) {
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:5000/personal-aphasia-testing/us-central1/setTestCase",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ testCase: testCase }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 interface EditTestCaseProps {
-  testCaseDraft?: TestCaseDraft | null;
-  onCancel: () => void;
+  testCase?: TestCase | null;
+  closeEdit: () => void;
 }
 
 const EditTestCase: React.FC<EditTestCaseProps> = ({
-  testCaseDraft: testCase = null,
-  onCancel,
+  testCase = null,
+  closeEdit,
 }) => {
   const [keepValues, setKeepValues] = useState(false);
-  const [utterance, setUtterance] = useState(testCase?.utterance ?? "");
-  const [context, setContext] = useState(
-    testCase?.context ??
-      ({
-        setting: "",
-        tone: "",
-        conversationType: "",
-      } as Context)
-  );
-  const [bio, setBio] = useState(
-    testCase?.bio ??
-      ({
-        name: "",
-        age: 0,
-        aboutMe: "",
-      } as Bio)
-  );
-  const [goodCompletions, setGoodCompletions] = useState(
-    testCase?.goodCompletions ?? []
-  );
+  const [addAnother, setAddAnother] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ifSaved, setIfSaved] = useState(false);
 
-  const handleSave = () => {
-    console.log("handleSave");
-    if (!keepValues) {
-      setUtterance("");
-      setContext({
-        setting: "",
-        tone: "",
-        conversationType: "",
-      });
-      setBio({
-        name: "",
-        age: 0,
-        aboutMe: "",
-      });
-      setGoodCompletions([]);
+  const form = useForm({
+    initialValues: {
+      goodCompletions: testCase?.goodCompletions.join("\n") ?? "",
+      utterance: testCase?.utterance ?? "",
+      setting: testCase?.context?.setting ?? "",
+      tone: testCase?.context?.tone ?? "",
+      conversationType: testCase?.context?.conversationType ?? "",
+      name: testCase?.bio?.name ?? "",
+      age: testCase?.bio?.age.toString() ?? "",
+      aboutMe: testCase?.bio?.aboutMe ?? "",
+    },
+    validate: {
+      utterance: isNotEmpty("Utterance is required"),
+      goodCompletions: isNotEmpty("Good completions are required"),
+      setting: isNotEmpty("Setting is required"),
+      tone: isNotEmpty("Tone is required"),
+      conversationType: isNotEmpty("Conversation type is required"),
+      name: isNotEmpty("Name is required"),
+      age: (value) => {
+        if (!value.trim()) {
+          return "Age is required";
+        }
+        const age = parseInt(value);
+        if (isNaN(age) || age < 0) {
+          return "Age must be a nonnegative number";
+        }
+        return null;
+      },
+      aboutMe: isNotEmpty("About me is required"),
+    },
+    validateInputOnBlur: true,
+    transformValues: (values) => ({
+      ...values,
+      goodCompletions: values.goodCompletions.split("\n"),
+      age: parseInt(values.age),
+    }),
+  });
+
+  const handleOnSubmit = async () => {
+    setIsLoading(true);
+    const formValues = form.getTransformedValues();
+    const testCaseDraftToSave: TestCase = {
+      id: testCase?.id,
+      utterance: formValues.utterance,
+      context: {
+        setting: formValues.setting,
+        tone: formValues.tone,
+        conversationType: formValues.conversationType,
+      },
+      bio: {
+        name: formValues.name,
+        age: formValues.age,
+        aboutMe: formValues.aboutMe,
+      },
+      goodCompletions: formValues.goodCompletions,
+    };
+    const result = await setTestCase(testCaseDraftToSave);
+    if (addAnother) {
+      if (!keepValues) {
+        form.reset();
+      }
+    } else {
+      closeEdit();
     }
+    setIfSaved(true);
+    setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (ifSaved) {
+      const timeout = setTimeout(() => {
+        setIfSaved(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [ifSaved]);
+
   return (
-    <Stack>
-      <Paper withBorder p="md">
-        <Title order={4}>Speech</Title>
-        <TextInput
-          label="Utterance"
-          value={utterance}
-          onChange={(event) => setUtterance(event.currentTarget.value)}
-        />
-        <Textarea
-          label="Good Completions (one per line)"
-          value={goodCompletions.join("\n")}
-          onChange={(event) =>
-            setGoodCompletions(event.currentTarget.value.split("\n"))
-          }
-          autosize
-          minRows={3}
-          maxRows={6}
-        />
-      </Paper>
-      <Paper withBorder p="md">
-        <Title order={4}>Context</Title>
-        <TextInput
-          label="Setting"
-          value={context.setting}
-          onChange={(event) =>
-            setContext({ ...context, setting: event.currentTarget.value })
-          }
-        />
-        <TextInput
-          label="Tone"
-          value={context.tone}
-          onChange={(event) =>
-            setContext({ ...context, tone: event.currentTarget.value })
-          }
-        />
-        <TextInput
-          label="Conversation Type"
-          value={context.conversationType}
-          onChange={(event) =>
-            setContext({
-              ...context,
-              conversationType: event.currentTarget.value,
-            })
-          }
-        />
-      </Paper>
-      <Paper withBorder p="md">
-        <Title order={4}>Bio</Title>
-        <TextInput
-          label="Name"
-          value={bio.name}
-          onChange={(event) =>
-            setBio({ ...bio, name: event.currentTarget.value })
-          }
-        />
-        <TextInput
-          label="Age"
-          type="number"
-          value={bio.age.toString()}
-          onChange={(event) =>
-            setBio({ ...bio, age: parseInt(event.currentTarget.value) })
-          }
-        />
-        <Textarea
-          label="About Me"
-          value={bio.aboutMe}
-          onChange={(event) =>
-            setBio({ ...bio, aboutMe: event.currentTarget.value })
-          }
-          autosize
-          minRows={3}
-          maxRows={6}
-        />
-      </Paper>
-      <Checkbox
-        label="Keep values after save"
-        checked={keepValues}
-        onChange={(event) => setKeepValues(event.currentTarget.checked)}
-      />
-      <Group grow>
-        <Button onClick={onCancel} variant="outline">
-          Cancel
-        </Button>
-        <Button onClick={handleSave}>Save</Button>
-      </Group>
-    </Stack>
+    <form onSubmit={form.onSubmit(handleOnSubmit)}>
+      <Stack>
+        <Fieldset legend="Speech">
+          <TextInput label="Utterance" {...form.getInputProps("utterance")} />
+          <Textarea
+            label="Good Completions (one per line)"
+            autosize
+            minRows={3}
+            maxRows={6}
+            {...form.getInputProps("goodCompletions")}
+          />
+        </Fieldset>
+        <Fieldset legend="Context">
+          <TextInput label="Setting" {...form.getInputProps("setting")} />
+          <TextInput label="Tone" {...form.getInputProps("tone")} />
+          <TextInput
+            label="Conversation Type"
+            {...form.getInputProps("conversationType")}
+          />
+        </Fieldset>
+        <Fieldset legend="Bio">
+          <TextInput label="Name" {...form.getInputProps("name")} />
+          <TextInput label="Age" type="number" {...form.getInputProps("age")} />
+          <Textarea
+            label="About Me"
+            autosize
+            minRows={3}
+            maxRows={6}
+            {...form.getInputProps("aboutMe")}
+          />
+        </Fieldset>
+        <Group justify="space-between" align="center">
+          <Group>
+            <Checkbox
+              label="Add another after save"
+              checked={addAnother}
+              onChange={(event) => setAddAnother(event.currentTarget.checked)}
+            />
+            {addAnother && (
+              <Checkbox
+                label="Keep values"
+                checked={keepValues}
+                onChange={(event) => setKeepValues(event.currentTarget.checked)}
+              />
+            )}
+          </Group>
+          {ifSaved && (
+            <Text c="green" size="sm">
+              Saved!
+            </Text>
+          )}
+        </Group>
+        <Group grow>
+          <Button onClick={closeEdit} variant="outline">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleOnSubmit}
+            loading={isLoading}
+            disabled={!form.isValid()}
+          >
+            Save
+          </Button>
+        </Group>
+      </Stack>
+    </form>
   );
 };
 

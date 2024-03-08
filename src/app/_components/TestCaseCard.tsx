@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { TestCase } from "@/app/_lib/types";
 import { IconTrash } from "@tabler/icons-react";
+import { unixTimestampToDateString } from "../_lib/utils";
 
 interface TestCaseCardProps {
   testCase: TestCase;
@@ -21,15 +22,13 @@ interface TestCaseCardProps {
 const TestCaseCard: React.FC<TestCaseCardProps> = ({ testCase }) => {
   const header = (
     <Group justify="space-between" align="center">
-      <Title order={2}>#{testCase.id}</Title>
+      <Title order={3}>{testCase.utterance}</Title>
       <Group>
-        <Text c="dimmed">
-          Created:{" "}
-          {testCase.dateCreatedUTC.toLocaleString("en-US", {
-            dateStyle: "short",
-            timeStyle: "short",
-          })}
-        </Text>
+        {testCase.dateCreatedUtc && (
+          <Text c="dimmed">
+            Created: {unixTimestampToDateString(testCase.dateCreatedUtc)}
+          </Text>
+        )}
         <Tooltip label="Delete test case" withArrow>
           <ActionIcon variant="outline" aria-label="Delete">
             <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />

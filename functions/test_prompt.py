@@ -69,17 +69,17 @@ def test_prompt(prompt: Prompt, test_cases: list[TestCase]) -> TestResults:
             utterance=test_case.utterance,
             setting=test_case.context.setting,
             tone=test_case.context.tone,
-            conversation_type=test_case.context.conversation_type,
+            conversation_type=test_case.context.conversationType,
             name=test_case.bio.name,
             age=test_case.bio.age,
-            about_me=test_case.bio.about_me
+            about_me=test_case.bio.aboutMe
         ))
         print(f"Test case {test_case.id} against prompt {prompt.id}")
         print(f"GPT completions: {gpt_completions}")
 
         # Get the embeddings for the GPT responses and the good responses
         gpt_embeddings = embed_texts(gpt_completions)
-        good_embeddings = embed_texts(test_case.good_completions)
+        good_embeddings = embed_texts(test_case.goodCompletions)
 
         # Average the embeddings
         avg_gpt_embedding = np.mean(gpt_embeddings, axis=0)

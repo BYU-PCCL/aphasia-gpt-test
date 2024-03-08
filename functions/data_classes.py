@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-import numpy as np
+from data_classes_utils import convert_np_float32s, custom_asdict
 
 
 @dataclass
@@ -16,35 +16,37 @@ class Prompt:
 class Context:
     setting: str
     tone: str
-    conversation_type: str
+    conversationType: str
 
     def to_dict(self):
         '''Converts the dataclass to a dictionary for serialization'''
-        return asdict(self)
+        return custom_asdict(self)
 
 
 @dataclass
 class Bio:
     name: str
     age: int
-    about_me: str
+    aboutMe: str
 
     def to_dict(self):
         '''Converts the dataclass to a dictionary for serialization'''
-        return asdict(self)
+        return custom_asdict(self)
 
 
 @dataclass
 class TestCase:
-    id: int
+    id: str
+    dateCreatedUtc: float  # Unix timestamp
+    dateUpdatedUtc: float  # Unix timestamp
     utterance: str
     context: Context
     bio: Bio
-    good_completions: list[str]
+    goodCompletions: list[str]
 
     def to_dict(self):
         '''Converts the dataclass to a dictionary for serialization'''
-        return asdict(self)
+        return custom_asdict(self)
 
 
 @dataclass
@@ -71,15 +73,3 @@ class TestResults:
     def to_dict(self):
         '''Converts the dataclass to a dictionary for serialization'''
         return convert_np_float32s(asdict(self))
-
-
-def convert_np_float32s(obj):
-    '''Converts all numpy float32s to regular floats at any level of a dictionary or list.'''
-    if isinstance(obj, dict):
-        return {k: convert_np_float32s(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_np_float32s(v) for v in obj]
-    elif isinstance(obj, np.float32):
-        return float(obj)
-    else:
-        return obj
