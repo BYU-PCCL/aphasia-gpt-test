@@ -1,4 +1,5 @@
 "use client";
+import { TEST_PROMPT_API_ENDPOINT } from "@/firebase";
 import { Button, Container, JsonInput, Stack, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
@@ -15,16 +16,13 @@ const params = [
 
 async function callTestPrompt(prompt: string) {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:5000/personal-aphasia-testing/us-central1/testPrompt",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: prompt }),
-      }
-    );
+    const response = await fetch(TEST_PROMPT_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt: prompt }),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -64,7 +62,7 @@ const Experiments: React.FC = () => {
 
   const paramStrings: string[] = params.map((param) => `{${param}}`);
 
-  const handleOnClick = async () => {
+  const handleOnSubmit = async () => {
     setLoading(true);
     const prompt = getPrompt();
     const testResultsObj: object = await callTestPrompt(prompt);
@@ -74,7 +72,7 @@ const Experiments: React.FC = () => {
 
   return (
     <Container size="sm">
-      <form onSubmit={form.onSubmit(() => handleOnClick())}>
+      <form onSubmit={form.onSubmit(handleOnSubmit)}>
         <Stack gap="sm">
           <Textarea
             label="Prompt"
@@ -115,7 +113,7 @@ const Experiments: React.FC = () => {
 export default Experiments;
 
 function getPrompt(): string {
-  return `Hi. You are an expert in communication disorders, specifically Broca's aphasia. Your task is to transform an utterance from a person with Broca's aphasia into a grammatically correct sentence and predict the next several words they will say. Do NOT request any additional information or context or ask any questions. Only provide the transformed predicted utterances. Examples:
+  return `You are an expert in communication disorders, specifically Broca's aphasia. Your task is to transform an utterance from a person with Broca's aphasia into a grammatically correct sentence and predict the next several words they will say. Do NOT request any additional information or context or ask any questions. Only provide the transformed predicted utterances. Examples:
     1. "Walk dog" => "I will take the dog for a walk"
     2. "Book book two table" => "There are two books on the table"
     3. "i want take kids" => "I want to take the kids to the park"

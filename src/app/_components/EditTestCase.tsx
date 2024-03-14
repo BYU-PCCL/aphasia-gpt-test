@@ -1,31 +1,30 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
+import { TestCase } from "@/app/_lib/types";
+import { SET_TEST_CASE_API_ENDPOINT } from "@/firebase";
 import {
-  TextInput,
-  Textarea,
   Button,
-  Stack,
-  Group,
-  Text,
   Checkbox,
   Fieldset,
+  Group,
+  Stack,
+  Text,
+  Textarea,
+  TextInput,
 } from "@mantine/core";
-import { TestCase } from "@/app/_lib/types";
 import { isNotEmpty, useForm } from "@mantine/form";
 
 async function setTestCase(testCase: TestCase) {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:5000/personal-aphasia-testing/us-central1/setTestCase",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ testCase: testCase }),
-      }
-    );
+    const response = await fetch(SET_TEST_CASE_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ testCase: testCase }),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

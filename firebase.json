@@ -1,22 +1,4 @@
 {
-  "emulators": {
-    "functions": {
-      "port": 5000
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "database": {
-      "port": 9000
-    },
-    "eventarc": {
-      "port": 9299
-    },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true
-  },
   "functions": [
     {
       "source": "functions",
@@ -24,8 +6,16 @@
       "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
   ],
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
+  "emulators": {
+    "functions": {
+      "port": 5000
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

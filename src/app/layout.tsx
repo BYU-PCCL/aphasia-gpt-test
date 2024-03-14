@@ -33,7 +33,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             <AppShellHeader px="sm">
               <AppHeader initialPathname={pathnameOnLoad} />
             </AppShellHeader>
-            <AppShellMain>{children}</AppShellMain>
+            <AppShellMain h={"100dvh"}>{children}</AppShellMain>
           </AppShell>
         </MantineProvider>
       </body>
