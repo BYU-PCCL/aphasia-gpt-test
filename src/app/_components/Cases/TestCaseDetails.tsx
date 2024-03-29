@@ -1,25 +1,23 @@
 import React from "react";
+
 import {
+  Divider,
+  Grid,
+  Group,
   Paper,
+  Spoiler,
+  Table,
   Text,
   Title,
-  Divider,
-  Table,
-  Group,
-  Spoiler,
-  Grid,
-  ActionIcon,
-  Tooltip,
 } from "@mantine/core";
-import { TestCase } from "@/app/_lib/types";
-import { IconTrash } from "@tabler/icons-react";
-import { unixTimestampToDateString } from "../_lib/utils";
 
-interface TestCaseCardProps {
-  testCase: TestCase;
-}
+import { TestCase } from "../../../../shared/types";
+import { unixTimestampToDateString } from "../../../../shared/utils";
+import { ItemDetailsProps } from "../ListDetailView";
 
-const TestCaseCard: React.FC<TestCaseCardProps> = ({ testCase }) => {
+const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
+  item: testCase,
+}) => {
   const header = (
     <Group justify="space-between" align="center">
       <Title order={3}>{testCase.utterance}</Title>
@@ -29,11 +27,11 @@ const TestCaseCard: React.FC<TestCaseCardProps> = ({ testCase }) => {
             Created: {unixTimestampToDateString(testCase.dateCreatedUtc)}
           </Text>
         )}
-        <Tooltip label="Delete test case" withArrow>
+        {/* <Tooltip label="Delete test case" withArrow>
           <ActionIcon variant="outline" aria-label="Delete">
             <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
           </ActionIcon>
-        </Tooltip>
+        </Tooltip> */}
       </Group>
     </Group>
   );
@@ -103,4 +101,4 @@ const TestCaseCard: React.FC<TestCaseCardProps> = ({ testCase }) => {
   );
 };
 
-export default TestCaseCard;
+export default TestCaseDetails;

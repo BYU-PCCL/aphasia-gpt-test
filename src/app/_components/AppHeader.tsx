@@ -1,8 +1,9 @@
 "use client";
 
-import { Group, Title, Button } from "@mantine/core";
 import Link from "next/link";
 import React, { useState } from "react";
+
+import { Button, Group, Title } from "@mantine/core";
 
 type AppHeaderProps = {
   initialPathname: string;
@@ -20,7 +21,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({ initialPathname }) => {
         currentPathnameState={{ currentPathname, setCurrentPathname }}
       />
       <HeaderLink
-        pathname="/experiments"
+        pathname="/prompts"
+        label="Prompts"
+        currentPathnameState={{ currentPathname, setCurrentPathname }}
+      />
+      <HeaderLink
+        pathname="/tests"
         label="Tests"
         currentPathnameState={{ currentPathname, setCurrentPathname }}
       />

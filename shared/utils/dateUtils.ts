@@ -9,3 +9,11 @@ export function unixTimestampToDateString(unixTimeStamp: number): string {
     timeStyle: "short",
   });
 }
+
+/**
+ * Gets the current unix timestamp in seconds
+ * @returns Current unix timestamp in seconds
+ */
+export function getUnixTimestamp(): number {
+  return Math.floor(Date.now() / 1000);
+}

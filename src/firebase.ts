@@ -16,19 +16,27 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseDb = getDatabase(firebaseApp);
 
-// if (process.env.NODE_ENV !== "production") {
-//   // Connect to the local emulator if not in production (https://firebase.google.com/docs/emulator-suite/connect_functions)
-//   const firebaseCloudFunctions = getFunctions(firebaseApp);
-//   connectFunctionsEmulator(firebaseCloudFunctions, "localhost", 5000);
-// }
-
 const isProduction = process.env.NODE_ENV === "production";
+
+// See the deployed function URLs in the Firebase console (https://console.firebase.google.com)
+// Cases
 export const SET_TEST_CASE_API_ENDPOINT = isProduction
-  ? "https://us-central1-brocas-userdb.cloudfunctions.net/setTestCase"
+  ? "https://settestcase-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/setTestCase";
 export const GET_ALL_TEST_CASES_API_ENDPOINT = isProduction
-  ? "https://us-central1-brocas-userdb.cloudfunctions.net/getAllTestCases"
+  ? "https://getalltestcases-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTestCases";
+// Prompts
+export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
+  ? "https://us-central1-brocas-userdb.cloudfunctions.net/getAllPrompts"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllPrompts";
+export const SET_PROMPT_API_ENDPOINT = isProduction
+  ? "https://setprompt-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/setPrompt";
+// Tests
+export const GET_ALL_TESTS_API_ENDPOINT = isProduction
+  ? "https://getallprompts-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTests";
 export const TEST_PROMPT_API_ENDPOINT = isProduction
-  ? "https://us-central1-brocas-userdb.cloudfunctions.net/testPrompt"
+  ? "https://testprompt-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/testPrompt";
