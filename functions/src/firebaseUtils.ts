@@ -55,6 +55,24 @@ export async function readTestCases(): Promise<TestCase[]> {
 }
 
 /**
+ * Read all test results from the Realtime DB.
+ * @return {Promise<PromptTestResults[]>} The list of test results.
+ */
+export async function readTestResults(): Promise<PromptTestResults[]> {
+  const resultSnapshot = await getPromptTestResultsRef().once("value");
+  const result = resultSnapshot.val();
+  let testResults: PromptTestResults[] = [];
+  if (result) {
+    testResults = Object.keys(result).map((key) => {
+      const testResult: PromptTestResults = result[key];
+      testResult.id = key;
+      return testResult;
+    });
+  }
+  return testResults;
+}
+
+/**
  * Read all prompts from the Realtime DB.
  * @return {Promise<PromptCandidate[]>} The list of prompts.
  */

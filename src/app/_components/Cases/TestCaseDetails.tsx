@@ -20,7 +20,9 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
 }) => {
   const header = (
     <Group justify="space-between" align="center">
-      <Title order={3}>{testCase.utterance}</Title>
+      <Title order={3} lineClamp={2}>
+        {testCase.utterance}
+      </Title>
       <Group>
         {testCase.dateCreatedUtc && (
           <Text c="dimmed">

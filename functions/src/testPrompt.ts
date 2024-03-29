@@ -8,6 +8,7 @@ import {
   TestResultsStatus,
 } from "../../shared/types";
 import {getUnixTimestamp} from "../../shared/utils";
+import {PRODUCTION_APP_URL} from "./constants";
 import {
   getPromptById,
   getPromptTestResultsRef,
@@ -26,63 +27,68 @@ const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
  * Run all test cases in the DB against the provided prompt.
  * Persist the results in the DB.
  */
-export const testPromptHandler = onRequest(async (req, res) => {
-  const data = req.body;
-  const promptId = data.promptId;
-  if (!promptId) {
-    res.status(400).send("No promptId parameter provided");
-    return;
-  }
-  const prompt: PromptCandidate | null = await getPromptById(promptId);
-  if (!prompt) {
-    res.status(400).send(`Prompt with id ${promptId} not found`);
-    return;
-  }
-
-  const testCases: TestCase[] = await readTestCases();
-
-  const testResultsId = await initializePromptTestResultsRecord(
-    testCases,
-    promptId,
-    OPENAI_MODEL,
-    EMBEDDING_MODEL_NAME,
-    TEMPERATURE,
-    MAX_TOKENS,
-    NUM_RESPONSES
-  );
-
-  for (const testCase of testCases) {
-    if (!testCase.id) {
-      logger.error("Test case has no id");
-      continue;
+export const testPromptHandler = onRequest(
+  {cors: PRODUCTION_APP_URL},
+  async (req, res) => {
+    const data = req.body;
+    const promptId = data.promptId;
+    if (!promptId) {
+      res.status(400).send("No promptId parameter provided");
+      return;
+    }
+    const prompt: PromptCandidate | null = await getPromptById(promptId);
+    if (!prompt) {
+      res.status(400).send(`Prompt with id ${promptId} not found`);
+      return;
     }
 
-    logger.info(`Testing prompt ${promptId} against test case ${testCase.id}`);
+    const testCases: TestCase[] = await readTestCases();
 
-    const {llmCompletions, cosineSimilarityScore} = await runPromptTestCase(
-      prompt,
-      testCase,
+    const testResultsId = await initializePromptTestResultsRecord(
+      testCases,
+      promptId,
       OPENAI_MODEL,
       EMBEDDING_MODEL_NAME,
       TEMPERATURE,
       MAX_TOKENS,
       NUM_RESPONSES
     );
-    logger.info(
-      `Savings results for case ${testCase.id} against prompt ${promptId}:
-       cosineSimilarityScore = ${cosineSimilarityScore}`
-    );
-    await saveTestCaseResult(
-      testResultsId,
-      testCase.id,
-      cosineSimilarityScore,
-      llmCompletions
-    );
-  }
 
-  console.log("All tests completed");
-  res.send({message: "Tests completed"});
-});
+    for (const testCase of testCases) {
+      if (!testCase.id) {
+        logger.error("Test case has no id");
+        continue;
+      }
+
+      logger.info(
+        `Testing prompt ${promptId} against test case ${testCase.id}`
+      );
+
+      const {llmCompletions, cosineSimilarityScore} = await runPromptTestCase(
+        prompt,
+        testCase,
+        OPENAI_MODEL,
+        EMBEDDING_MODEL_NAME,
+        TEMPERATURE,
+        MAX_TOKENS,
+        NUM_RESPONSES
+      );
+      logger.info(
+        `Savings results for case ${testCase.id} against prompt ${promptId}:
+       cosineSimilarityScore = ${cosineSimilarityScore}`
+      );
+      await saveTestCaseResult(
+        testResultsId,
+        testCase.id,
+        cosineSimilarityScore,
+        llmCompletions
+      );
+    }
+
+    console.log("All tests completed");
+    res.send({message: "Tests completed"});
+  }
+);
 
 /**
  * Save the results of a test case to the DB.

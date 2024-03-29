@@ -1,5 +1,6 @@
 import {getAllPromptsHandler} from "./getAllPrompts";
 import {getAllTestCasesHandler} from "./getAllTestCases";
+import {getAllTestsHandler} from "./getAllTests";
 import {setPromptHandler} from "./setPrompt";
 import {setTestCaseHandler} from "./setTestCase";
 import {testPromptHandler} from "./testPrompt";
@@ -16,3 +17,4 @@ export const getAllPrompts = getAllPromptsHandler;
 
 // Tests
 export const testPrompt = testPromptHandler;
+export const getAllTests = getAllTestsHandler;

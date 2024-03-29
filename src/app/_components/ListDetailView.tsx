@@ -1,3 +1,4 @@
+import { get } from "http";
 import { useEffect, useState } from "react";
 
 import {
@@ -114,7 +115,7 @@ const ListDetailView = <T,>({
                         key={index}
                         onClick={() => setSelectedItem(item)}
                         active={selectedItem === item}
-                        label={getLabel(item)}
+                        label={<Text lineClamp={3}>{getLabel(item)}</Text>}
                         description={getDescription(item)}
                       />
                     ))}

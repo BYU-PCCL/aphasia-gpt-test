@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+
+import { headers } from "next/headers";
+
 import {
   AppShell,
   AppShellHeader,
@@ -8,6 +11,8 @@ import {
   ColorSchemeScript,
   MantineProvider,
 } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+
 import AppHeader from "./_components/AppHeader";
 import { theme } from "./theme";
 
@@ -29,6 +34,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       </head>
       <body>
         <MantineProvider theme={theme}>
+          <Notifications />
           <AppShell header={{ height: 60 }} padding="md">
             <AppShellHeader px="sm">
               <AppHeader initialPathname={pathnameOnLoad} />
