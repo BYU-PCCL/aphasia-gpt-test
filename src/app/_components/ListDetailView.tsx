@@ -1,4 +1,3 @@
-import { get } from "http";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,6 +7,7 @@ import {
   Flex,
   Loader,
   NavLink,
+  Paper,
   ScrollArea,
   Stack,
   Text,
@@ -25,56 +25,25 @@ export type ItemDetailsProps<T> = {
 
 interface ListDetailViewProps<T> {
   title: string;
+  data: T[] | null;
+  isDataLoading: boolean;
   ItemEdit?: React.FC<ItemEditProps<T>>;
-  ItemDetails: React.FC<ItemDetailsProps<T>>;
-  apiEndpoint: string;
+  ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
   getDescription: (item: T) => string;
 }
 
 const ListDetailView = <T,>({
   title,
+  data,
+  isDataLoading,
   ItemEdit: EditComponent,
   ItemDetails: CardComponent,
-  apiEndpoint,
   getLabel,
   getDescription,
 }: ListDetailViewProps<T>) => {
-  const [data, setData] = useState<T[] | null>(null);
-  const [isLoading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [loadingError, setLoadingError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(apiEndpoint);
-
-        if (!response.ok) {
-          throw new Error(
-            `Error fetching data: HTTP status of ${response.status}`
-          );
-        }
-        const data = await response.json();
-        if (isMounted) {
-          setData(data);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setLoadingError(`Error fetching data: ${error}`);
-        setLoading(false);
-      }
-    };
-    fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [apiEndpoint]);
 
   useEffect(() => {
     if (!selectedItem) {
@@ -128,16 +97,14 @@ const ListDetailView = <T,>({
             h={{ base: "50%", sm: "100%" }}
             w={{ base: "100%", sm: "67%", md: "75%" }}
           >
-            {isLoading ? (
+            {isDataLoading ? (
               <Center>
                 <Loader size="xl" />
               </Center>
-            ) : loadingError ? (
-              <Text c="red" ta="center">
-                {loadingError}
-              </Text>
             ) : selectedItem ? (
-              <CardComponent item={selectedItem} />
+              <Paper withBorder p="md" h="100%">
+                {CardComponent(selectedItem)}
+              </Paper>
             ) : (
               <Title order={5}>Select an item to view its details</Title>
             )}

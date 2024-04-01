@@ -146,27 +146,21 @@ async function embedTexts(
     throw new Error(json.error);
   }
 
-  const allEmbeddings = json as number[][][][];
-  const clsEmbeddings: number[][] = allEmbeddings.map(
-    (embeddings: number[][][]) => {
-      return getClsTokenEmbedding(embeddings);
-    }
-  );
-  return clsEmbeddings;
-}
+  const allEmbeddings = json as number[][];
+  const eachEmbeddingIsArrayOfNumbers =
+    allEmbeddings &&
+    allEmbeddings.length > 0 &&
+    allEmbeddings.every(
+      (embedding) =>
+        Array.isArray(embedding) &&
+        embedding.every((item) => typeof item === "number")
+    );
 
-/**
- * Get the CLS token embedding from a list of embeddings.
- * @param {Array<Array<Array<number>>>} embeddings The embeddings to get the
- *  CLS token from.
- * @return {Array<number>} The CLS token embedding.
- */
-function getClsTokenEmbedding(embeddings: number[][][]): number[] {
-  if (embeddings.length === 0) {
-    throw new Error("Embeddings array is empty");
+  if (!eachEmbeddingIsArrayOfNumbers) {
+    throw new Error(
+      "Embeddings returned are not arrays of numbers as expected"
+    );
   }
-  if (embeddings[0].length === 0) {
-    throw new Error("Embeddings inner array is empty");
-  }
-  return embeddings[0][0];
+
+  return allEmbeddings;
 }

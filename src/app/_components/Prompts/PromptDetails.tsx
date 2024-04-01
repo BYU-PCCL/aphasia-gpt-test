@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { TEST_PROMPT_API_ENDPOINT } from "@/firebase";
@@ -9,22 +8,16 @@ import {
   CopyButton,
   Divider,
   Group,
-  Paper,
-  Stack,
   Text,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconCopy, IconTestPipe2 } from "@tabler/icons-react";
 
-import {
-  encodedPromptParams,
-  PromptCandidate,
-  TestResultsStatus,
-} from "../../../../shared/types";
+import { PromptCandidate } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { ItemDetailsProps } from "../ListDetailView";
+import PromptText from "../PromptText";
 
 const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
   item: prompt,
@@ -62,12 +55,17 @@ const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
       });
     } catch (error) {
       console.error("Error:", error);
+      notifications.show({
+        title: "Tests failed",
+        message: (error as Error).message ?? "An unknown error occurred.",
+        color: "red",
+      });
     }
     setRunTestsLoading(false);
   };
 
   return (
-    <Paper withBorder p="md" h="100%">
+    <>
       <Group justify="space-between" align="center">
         <Group>
           <Button
@@ -100,26 +98,9 @@ const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
       </Group>
       <Divider mt="xs" mb="sm" />
       <Container fluid>
-        {prompt.prompt.split("\n").map((line, i) => {
-          return (
-            <span key={i}>
-              {line.split(" ").map((word, j) => {
-                return (
-                  <Text
-                    key={j}
-                    fw={encodedPromptParams.includes(word) ? 700 : 300}
-                    span
-                  >
-                    {word}{" "}
-                  </Text>
-                );
-              })}
-              <br />
-            </span>
-          );
-        })}
+        <PromptText prompt={prompt} />
       </Container>
-    </Paper>
+    </>
   );
 };
 

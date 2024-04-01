@@ -95,11 +95,11 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
   );
 
   return (
-    <Paper withBorder p="md" h="100%">
+    <>
       {header}
       <Divider mt="xs" mb="sm" />
       {body}
-    </Paper>
+    </>
   );
 };
 
