@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "fb": "cd functions && npm run serve",
+    "install:all": "npm install && cd functions && npm install",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

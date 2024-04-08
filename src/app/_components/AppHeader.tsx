@@ -26,8 +26,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ initialPathname }) => {
         currentPathnameState={{ currentPathname, setCurrentPathname }}
       />
       <HeaderLink
-        pathname="/tests"
-        label="Tests"
+        pathname="/results"
+        label="Results"
         currentPathnameState={{ currentPathname, setCurrentPathname }}
       />
     </Group>

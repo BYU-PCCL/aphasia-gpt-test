@@ -28,15 +28,18 @@ export const GET_ALL_TEST_CASES_API_ENDPOINT = isProduction
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTestCases";
 // Prompts
 export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
-  ? "https://us-central1-brocas-userdb.cloudfunctions.net/getAllPrompts"
+  ? "https://getallprompts-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllPrompts";
 export const SET_PROMPT_API_ENDPOINT = isProduction
   ? "https://setprompt-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/setPrompt";
 // Tests
 export const GET_ALL_TESTS_API_ENDPOINT = isProduction
-  ? "https://getallprompts-hzvkkbfdsa-uc.a.run.app"
+  ? ""
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTests";
-export const TEST_PROMPT_API_ENDPOINT = isProduction
+export const START_PROMPT_TESTS_API_ENDPOINT = isProduction
   ? "https://testprompt-hzvkkbfdsa-uc.a.run.app"
-  : "http://127.0.0.1:5000/brocas-userdb/us-central1/testPrompt";
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/startPromptTests";
+export const RECALCULATE_RESULTS_API_ENDPOINT = isProduction
+  ? ""
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/checkAllTestCaseResultsStatus";

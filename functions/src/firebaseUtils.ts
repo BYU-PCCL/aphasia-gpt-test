@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import * as logger from "firebase-functions/logger";
 
 import {
   PromptCandidate,
@@ -26,6 +27,16 @@ export function getCaseListRef() {
  */
 export function getPromptTestResultsRef() {
   return db.ref("/prompt-testing/results");
+}
+
+export function getTestCaseResultRef(
+  testResultsId: string,
+  testCaseId: string
+) {
+  return getPromptTestResultsRef()
+    .child(testResultsId)
+    .child("testCaseResults")
+    .child(testCaseId);
 }
 
 /**
@@ -123,7 +134,7 @@ export async function initializePromptTestResultsRecord(
   temperature: number,
   maxTokens: number,
   numResponses: number
-): Promise<string> {
+): Promise<PromptTestResults> {
   const curDateTime = getUnixTimestamp();
   const testCaseResults: Record<string, TestCaseResult> = {};
   for (const testCase of testCases) {
@@ -153,5 +164,123 @@ export async function initializePromptTestResultsRecord(
     throw new Error("Failed to create new test results record");
   }
 
-  return newResultRef.key;
+  promptTestResults.id = newResultRef.key;
+  return promptTestResults;
+}
+
+/**
+ * Get a prompt test results record by ID.
+ * @param {string} promptTestResultsId The ID of the prompt test results record.
+ * @return {Promise<PromptTestResults | null>} The prompt test results record
+ * with the given ID, or null if not found.
+ */
+export async function getPromptTestResultsById(
+  promptTestResultsId: string
+): Promise<PromptTestResults | null> {
+  const results = await readTestResults();
+  return results.find((result) => result.id === promptTestResultsId) || null;
+}
+
+/**
+ * Get a test case by ID.
+ * @param {string} testCaseId The ID of the test case to get.
+ * @return {Promise<TestCase | null>} The test case with the given ID,
+ *  or null if not found.
+ */
+export async function getTestCaseById(
+  testCaseId: string
+): Promise<TestCase | null> {
+  const cases = await readTestCases();
+  return cases.find((testCase) => testCase.id === testCaseId) || null;
+}
+
+/**
+ * Update the status of a prompt test results record.
+ * @param {string} promptTestResultsId The ID of the prompt test results record.
+ * @param {TestResultsStatus} status The new status to set.
+ * @return {Promise<void>} A promise that resolves when the update is complete.
+ */
+export async function updatePromptTestResultsStatus(
+  promptTestResultsId: string,
+  status: TestResultsStatus
+): Promise<void> {
+  const resultRef = getPromptTestResultsRef().child(promptTestResultsId);
+  await resultRef.update({status});
+}
+
+/**
+ * Save the results of a test case to the DB. Sets the status to COMPLETE.
+ * @param {string} promptTestResultsId The ID of the prompt test results record.
+ * @param {string} testCaseId The ID of the test case.
+ * @param {number} cosineSimilarityScore The cosine similarity score.
+ * @param {string[]} llmCompletions The completions from the LLM.
+ */
+export async function saveTestCaseResult(
+  promptTestResultsId: string,
+  testCaseId: string,
+  cosineSimilarityScore: number,
+  llmCompletions: string[]
+) {
+  const testCaseResult: TestCaseResult = {
+    testCaseId: testCaseId,
+    status: TestResultsStatus.COMPLETE,
+    cosineSimilarityScore: cosineSimilarityScore,
+    llmCompletions: llmCompletions,
+    dateCompletedUtc: getUnixTimestamp(),
+  };
+  const resultRef = getTestCaseResultRef(promptTestResultsId, testCaseId);
+  await resultRef.set(testCaseResult);
+}
+
+/**
+ * Delete a prompt test results record from the DB.
+ * @param {string} promptTestResultsId The ID of the prompt test results record.
+ */
+export async function deletePromptTestResultsRecord(
+  promptTestResultsId: string
+): Promise<void> {
+  const resultRef = getPromptTestResultsRef().child(promptTestResultsId);
+  await resultRef.remove();
+}
+
+/**
+ * Update the status of a test case result.
+ * @param {string} testResultsId The ID of the test results record.
+ * @param {string} testCaseId The ID of the test case.
+ * @param {TestResultsStatus} status The new status to set.
+ * @return {Promise<void>} A promise that resolves when the update is complete.
+ */
+export async function updateTestCaseResultStatus(
+  testResultsId: string,
+  testCaseId: string,
+  status: TestResultsStatus
+): Promise<void> {
+  logger.info(
+    `Updating status of test case ${testCaseId} in test results ${testResultsId} to ${status}`
+  );
+  const resultRef = getTestCaseResultRef(testResultsId, testCaseId);
+  await resultRef.update({status: status});
+}
+
+export async function setAverageCosineSimilarityScore(
+  testResultsId: string
+): Promise<void> {
+  logger.info(
+    `Calculating average cosine similarity score for test results ${testResultsId}`
+  );
+  const promptTestResults = await getPromptTestResultsById(testResultsId);
+  if (!promptTestResults) {
+    throw new Error(`Prompt test results with id ${testResultsId} not found`);
+  }
+
+  const scores: number[] = Object.values(promptTestResults.testCaseResults)
+    .map((result) => result.cosineSimilarityScore)
+    .filter((score): score is number => score !== null && score !== undefined);
+  const average = scores.reduce((acc, score) => acc + score, 0) / scores.length;
+
+  logger.info(
+    `Average cosine similarity score for test results ${testResultsId}: ${average}`
+  );
+  const resultRef = getPromptTestResultsRef().child(testResultsId);
+  await resultRef.update({averageCosineSimilarityScore: average});
 }

@@ -2,9 +2,9 @@
  * The status of the test results
  */
 export enum TestResultsStatus {
-  NOT_STARTED = "Not-Started",
-  IN_PROGRESS = "In-Progress",
-  COMPLETED = "Completed",
+  NOT_STARTED = "Not Started",
+  IN_PROGRESS = "In Progress",
+  COMPLETE = "Complete",
   ERROR = "Error",
 }
 

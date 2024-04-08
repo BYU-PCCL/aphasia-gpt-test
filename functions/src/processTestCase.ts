@@ -1,12 +1,101 @@
+import * as logger from "firebase-functions/logger";
 import {defineString} from "firebase-functions/params";
 import * as math from "mathjs";
 import OpenAI from "openai";
 import {ChatCompletion} from "openai/resources";
 
-import {PromptCandidate, TestCase} from "../../shared/types";
+import {
+  PromptCandidate,
+  PromptTestResults,
+  TestCase,
+  TestResultsStatus,
+} from "../../shared/types";
+import {saveTestCaseResult, updateTestCaseResultStatus} from "./firebaseUtils";
 
+const MAX_TEST_CASE_RETRIES = 4;
 const HUGGINGFACE_API_TOKEN = defineString("HUGGINGFACE_API_TOKEN");
 const OPENAI_API_KEY = defineString("OPENAI_API_KEY");
+
+export async function processTestCase(
+  prompt: PromptCandidate,
+  testCase: TestCase,
+  promptTestResults: PromptTestResults
+) {
+  if (!testCase.id) {
+    throw new Error("Test case id is missing");
+  }
+  if (!promptTestResults.id) {
+    throw new Error("Prompt test results id is missing");
+  }
+
+  let llmCompletions: string[] = [];
+  let cosineSimilarityScore: number = -Infinity;
+
+  updateTestCaseResultStatus(
+    promptTestResults.id,
+    testCase.id,
+    TestResultsStatus.IN_PROGRESS
+  );
+
+  for (let i = 0; i < MAX_TEST_CASE_RETRIES; i++) {
+    try {
+      logger.debug(
+        `Attempt #${i + 1} for test case ${testCase.id} against prompt ${
+          prompt.id
+        }`
+      );
+
+      const result = await runPromptTestCase(
+        prompt,
+        testCase,
+        promptTestResults.llmModel,
+        promptTestResults.embeddingsModel,
+        promptTestResults.temperature,
+        promptTestResults.maxTokens,
+        promptTestResults.numResponses
+      );
+      llmCompletions = result.llmCompletions;
+      cosineSimilarityScore = result.cosineSimilarityScore;
+
+      if (cosineSimilarityScore > 1 || cosineSimilarityScore < -1) {
+        throw new Error(
+          `Cosine similarity score is out of range [-1, 1]: ${cosineSimilarityScore}`
+        );
+      }
+
+      logger.info(
+        `Test case ${testCase.id} completed with cosine similarity score: ${cosineSimilarityScore}`
+      );
+      logger.info(
+        `Saving test case ${testCase.id} result with cosine similarity score: ${cosineSimilarityScore}`
+      );
+      await saveTestCaseResult(
+        promptTestResults.id,
+        testCase.id,
+        cosineSimilarityScore,
+        llmCompletions
+      );
+      break;
+    } catch (error) {
+      if (i < MAX_TEST_CASE_RETRIES - 1) {
+        logger.warn(
+          `Error running test case ${testCase.id}, but will retry ${
+            i + 1
+          } more times: ${error}`
+        );
+      } else {
+        logger.error(
+          `Max retries reached for test case ${testCase.id}: ${error}`
+        );
+        await updateTestCaseResultStatus(
+          promptTestResults.id,
+          testCase.id,
+          TestResultsStatus.ERROR
+        );
+      }
+    }
+  }
+}
 
 /**
  * Run a test case against a prompt, getting completions from the LLM and
@@ -23,7 +112,7 @@ const OPENAI_API_KEY = defineString("OPENAI_API_KEY");
  * @return {Promise<{llmCompletions: string[], cosineSimilarityScore: number}>}
  *  The completions from the LLM and the cosine similarity score.
  */
-export async function runPromptTestCase(
+async function runPromptTestCase(
   prompt: PromptCandidate,
   testCase: TestCase,
   openaiModel: string,
@@ -32,6 +121,8 @@ export async function runPromptTestCase(
   maxTokens: number,
   numResponses: number
 ): Promise<{llmCompletions: string[]; cosineSimilarityScore: number}> {
+  logger.info(`Running test case ${testCase.id} against prompt ${prompt.id}`);
+
   const gptCompletions = await getGptCompletion(
     prompt.prompt,
     openaiModel,

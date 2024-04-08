@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { TEST_PROMPT_API_ENDPOINT } from "@/firebase";
+import { START_PROMPT_TESTS_API_ENDPOINT } from "@/firebase";
 import {
   Button,
   Container,
@@ -27,7 +27,7 @@ const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
   const runTestsClick = async () => {
     setRunTestsLoading(true);
     try {
-      const response = await fetch(TEST_PROMPT_API_ENDPOINT, {
+      const response = await fetch(START_PROMPT_TESTS_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,8 +49,8 @@ const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
 
       console.log(response.json()); // TODO: Do something with this
       notifications.show({
-        title: "Tests successful",
-        message: 'View the results in the "Tests" tab.',
+        title: "Tests started",
+        message: 'Monitor the results in the "Results" tab.',
         color: "teal",
       });
     } catch (error) {

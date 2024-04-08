@@ -1,7 +1,7 @@
 "use client";
 
 import ListDetailView from "@/app/_components/ListDetailView";
-import TestDetails from "@/app/_components/Tests/TestDetails";
+import ResultsDetails from "@/app/_components/Results/ResultsDetails";
 import useDataFetcher from "@/app/_hooks/useDataFetcher";
 import {
   GET_ALL_PROMPTS_API_ENDPOINT,
@@ -32,22 +32,22 @@ const Tests: React.FC = () => {
 
   return (
     <ListDetailView
-      title="Tests"
+      title="Results"
       data={results}
-      isDataLoading={isResultsLoading && isPromptsLoading && isTestCasesLoading}
+      isDataLoading={isResultsLoading || isPromptsLoading || isTestCasesLoading}
       ItemDetails={(test) => (
-        <TestDetails
+        <ResultsDetails
           item={test}
           prompts={prompts ?? []}
           testCases={testCases ?? []}
         />
       )}
-      getLabel={(test) => test.id ?? test.promptId}
-      getDescription={(test) =>
+      getLabel={(test) =>
         test.dateCreatedUtc
           ? unixTimestampToDateString(test.dateCreatedUtc)
-          : ""
+          : test.id ?? "ERROR displaying test date"
       }
+      getDescription={(test) => test.status}
     />
   );
 };
