@@ -17,6 +17,16 @@ To make successfull HTTP requests to OpenAI (GPT completions) and Hugging Face (
 
 These will also be required to be set in order to deploy the Firebase functions.
 
+### Install Dependencies
+
+Run the following from the root directory:
+
+```shell
+npm run install:all
+```
+
+Follow these instructions to install and configure the [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli). This is required to run the Firebase functions locally and deploy them. You will need to log in to the Firebase CLI and have the correct permissions to deploy.
+
 ### Run the App Locally
 
 You will need to run the React app as well as the Firebase Local Emulator Suite for the app to work locally.
@@ -33,7 +43,7 @@ The React app will be running at [http://localhost:3000](http://localhost:3000).
 
 #### Firebase Local Emulator Suite
 
-The Firebase Local Emulator Suite acts as a local version of cloud functions and DB.
+The [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite/install_and_configure) acts as a local version of cloud functions and DB.
 
 Run the following from the root directory (builds the Firebase functions and starts the Firebase emulators):
 
@@ -45,21 +55,23 @@ You can view the Emulator UI at [http://localhost:4000](http://localhost:4000).
 
 #### Debug Firebase Functions
 
-After running the Firebase Local Emulator Suite, you can attach a debugger using the configuration in `.vscode/launch.json` (press `F5` in VSCode).
+After running the Firebase Local Emulator Suite, you can attach a debugger using the configuration in `.vscode/launch.json` (press `F5` in VSCode). Debugging configurations in other IDEs must be set up manually.
 
-### Deploying the App
+## Deploying the App
 
-#### React App
+### React App
 
-There is a Vercel project associated with this repository. Pushing to the `main` branch will trigger a deployment.
+There is a Vercel project ([aphasia-gpt-test](https://vercel.com/aphasiavercel/aphasia-gpt-test)) associated with this repository as part of the [AphasiaVercel](https://vercel.com/aphasiavercel) team. Pushing to the `main` branch of this repo on GitHub will trigger a deployment through Vercel.
 
-#### Firebase Functions
+### Firebase Functions
 
-To deploy the Firebase functions, run the following from the root directory (note that you will need to have the [Firebase CLI ](https://firebase.google.com/docs/cli)installed, be logged in, and have the correct permissions):
+To deploy the Firebase functions, run the following from the root directory (note that you will need to have the [Firebase CLI ](https://firebase.google.com/docs/cli)installed, be logged in, and have the correct permissions, as described above):
 
 ```shell
 firebase deploy
 ```
+
+## Starter Data
 
 ### A Basic Prompt
 
@@ -82,6 +94,18 @@ Examples:
    - current setting: {setting}
    - type of conversation they are having: {conversation_type}
    - tone of voice they are trying to convey: {tone}
-     Please provide a single transformed/predicted sentece for the following utterance:
+     Please provide a single transformed/predicted sentence for the following utterance:
      {utterance}
 ```
+
+### A Basic Test Case
+
+#### Utterance
+
+get book me here
+
+#### Good Completions
+
+Can you grab that book for me and bring it here?
+This right here is my book that I just got from the library.
+I need get a book to keep here.
