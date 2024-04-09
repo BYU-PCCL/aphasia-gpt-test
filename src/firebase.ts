@@ -37,5 +37,5 @@ export const GET_ALL_TESTS_API_ENDPOINT = isProduction
   ? "https://getalltests-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTests";
 export const START_PROMPT_TESTS_API_ENDPOINT = isProduction
-  ? "https://testprompt-hzvkkbfdsa-uc.a.run.app"
+  ? "https://startprompttests-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/startPromptTests";
