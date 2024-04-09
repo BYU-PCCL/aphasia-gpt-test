@@ -34,6 +34,7 @@ const Tests: React.FC = () => {
   return (
     <ListDetailView
       title="Results"
+      subtitle="Data does not update in real-time. Refresh the page to see the latest results."
       data={results}
       isDataLoading={isResultsLoading || isPromptsLoading || isTestCasesLoading}
       ItemDetails={(test) => (

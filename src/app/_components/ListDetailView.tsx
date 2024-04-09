@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  Box,
   Button,
   Center,
   Container,
@@ -25,6 +26,7 @@ export type ItemDetailsProps<T> = {
 
 interface ListDetailViewProps<T> {
   title: string;
+  subtitle?: string;
   data: T[] | null;
   isDataLoading: boolean;
   ItemEdit?: React.FC<ItemEditProps<T>>;
@@ -35,6 +37,7 @@ interface ListDetailViewProps<T> {
 
 const ListDetailView = <T,>({
   title,
+  subtitle,
   data,
   isDataLoading,
   ItemEdit: EditComponent,
@@ -67,9 +70,10 @@ const ListDetailView = <T,>({
             w={{ base: "100%", sm: "33%", md: "25%" }}
             px={0}
           >
-            <Title order={1} mb="sm">
-              {title}
-            </Title>
+            <Box mb="sm">
+              <Title order={1}>{title}</Title>
+              <Text>{subtitle}</Text>
+            </Box>
             {EditComponent && (
               <Button onClick={() => setIsEditing(true)} mb="sm">
                 Add
