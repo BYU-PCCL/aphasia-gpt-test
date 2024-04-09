@@ -5,7 +5,7 @@ import {setPromptHandler} from "./setPrompt";
 import {setTestCaseHandler} from "./setTestCase";
 import {startPromptTestsHandler} from "./startPromptTests";
 
-//~~~~ Firebase Function API Endpoints ~~~~//
+//  ~~~~ Firebase Function API Endpoints ~~~~ //
 
 // Test Cases
 export const setTestCase = setTestCaseHandler;
@@ -18,8 +18,3 @@ export const getAllPrompts = getAllPromptsHandler;
 // Tests
 export const getAllTests = getAllTestsHandler;
 export const startPromptTests = startPromptTestsHandler;
-// export const checkAllTestCaseResultsStatus = checkAllTestCaseResultsStatusHandler;
-
-//~~~~ Database OnWritten Handlers ~~~~//
-
-// export const onTestCaseWritten = onTestCaseResultsWrittenHandler;

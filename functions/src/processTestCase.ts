@@ -16,6 +16,13 @@ const MAX_TEST_CASE_RETRIES = 4;
 const HUGGINGFACE_API_TOKEN = defineString("HUGGINGFACE_API_TOKEN");
 const OPENAI_API_KEY = defineString("OPENAI_API_KEY");
 
+/**
+ * Process a test case against a prompt.
+ * The test case is run against the prompt, and the results are saved.
+ * @param {PromptCandidate} prompt The prompt to test.
+ * @param {TestCase} testCase The test case to run.
+ * @param {PromptTestResults} promptTestResults The prompt test results.
+ */
 export async function processTestCase(
   prompt: PromptCandidate,
   testCase: TestCase,
@@ -29,7 +36,7 @@ export async function processTestCase(
   }
 
   let llmCompletions: string[] = [];
-  let cosineSimilarityScore: number = -Infinity;
+  let cosineSimilarityScore = -Infinity;
 
   updateTestCaseResultStatus(
     promptTestResults.id,
@@ -51,23 +58,25 @@ export async function processTestCase(
         promptTestResults.llmModel,
         promptTestResults.embeddingsModel,
         promptTestResults.temperature,
-        promptTestResults.maxTokens,
-        promptTestResults.numResponses
+        promptTestResults.maxTokens
       );
       llmCompletions = result.llmCompletions;
       cosineSimilarityScore = result.cosineSimilarityScore;
 
       if (cosineSimilarityScore > 1 || cosineSimilarityScore < -1) {
         throw new Error(
-          `Cosine similarity score is out of range [-1, 1]: ${cosineSimilarityScore}`
+          `Cosine similarity score is out of range
+            [-1, 1]: ${cosineSimilarityScore}`
         );
       }
 
       logger.info(
-        `Test case ${testCase.id} completed with cosine similarity score: ${cosineSimilarityScore}`
+        `Test case ${testCase.id} completed with cosine similarity
+          score: ${cosineSimilarityScore}`
       );
       logger.info(
-        `Saving test case ${testCase.id} result with cosine similarity score: ${cosineSimilarityScore}`
+        `Saving test case ${testCase.id} result with cosine similarity
+          score: ${cosineSimilarityScore}`
       );
       await saveTestCaseResult(
         promptTestResults.id,
@@ -108,7 +117,6 @@ export async function processTestCase(
  *  for embeddings.
  * @param {number} temperature The temperature to use for the LLM.
  * @param {number} maxTokens The maximum number of tokens to generate.
- * @param {number} numResponses The number of responses to generate.
  * @return {Promise<{llmCompletions: string[], cosineSimilarityScore: number}>}
  *  The completions from the LLM and the cosine similarity score.
  */
@@ -118,8 +126,7 @@ async function runPromptTestCase(
   openaiModel: string,
   embeddingsModelName: string,
   temperature: number,
-  maxTokens: number,
-  numResponses: number
+  maxTokens: number
 ): Promise<{llmCompletions: string[]; cosineSimilarityScore: number}> {
   logger.info(`Running test case ${testCase.id} against prompt ${prompt.id}`);
 
@@ -127,8 +134,7 @@ async function runPromptTestCase(
     prompt.prompt,
     openaiModel,
     temperature,
-    maxTokens,
-    numResponses
+    maxTokens
   );
   const gptEmbeddings = await embedTexts(gptCompletions, embeddingsModelName);
   const goodEmbeddings = await embedTexts(
@@ -179,15 +185,13 @@ function averageOfVectors(vectors: number[][]): number[] {
  * @param {string} openaiModel The OpenAI model to use.
  * @param {number} temperature The temperature to use.
  * @param {number} maxTokens The maximum number of tokens to generate.
- * @param {number} numResponses The number of responses to generate.
  * @return {Promise<string[]>} The completions from the LLM.
  */
 async function getGptCompletion(
   prompt: string,
   openaiModel: string,
   temperature: number,
-  maxTokens: number,
-  numResponses: number
+  maxTokens: number
 ): Promise<string[]> {
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY.value(),
@@ -197,12 +201,32 @@ async function getGptCompletion(
     model: openaiModel,
     max_tokens: maxTokens,
     temperature,
-    n: numResponses,
   });
 
-  return chatCompletion.choices
-    .map((choice: ChatCompletion.Choice) => choice.message.content)
-    .filter((content): content is string => content !== null);
+  return extractCompletionTexts(chatCompletion);
+}
+
+/**
+ * Extract completion texts from a chat completion, cleaning the strings.
+ * @param {ChatCompletion} chatCompletion The chat completion to extract from.
+ * @return {string[]} The completion texts.
+ */
+function extractCompletionTexts(chatCompletion: ChatCompletion): string[] {
+  const text: string | null = chatCompletion.choices[0].message.content;
+  if (!text) {
+    throw new Error("No completion text found in chat completion");
+  }
+  logger.debug(`Completion text: ${text}`);
+
+  const texts = text
+    .split("\n")
+    .filter((s: string) => s.length > 0)
+    // Remove quotes
+    .map((s) => s.replace(/['"]+/g, ""))
+    // Remove "Prediction n: " prefix
+    .map((s) => s.replace(/Prediction \d+: /g, ""));
+
+  return texts;
 }
 
 /**

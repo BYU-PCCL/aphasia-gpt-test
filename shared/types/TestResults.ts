@@ -23,8 +23,6 @@ export interface PromptTestResults {
   temperature: number;
   /** The maximum number of tokens requested per generation */
   maxTokens: number;
-  /** The number of responses requested per generation */
-  numResponses: number;
   /** A dictionary of test case Firebase ids and their results */
   testCaseResults: Record<string, TestCaseResult>;
   /** Unix timestamp of when the test result was created */

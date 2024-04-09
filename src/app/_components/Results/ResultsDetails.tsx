@@ -62,48 +62,7 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
     { key: "Embeddings Model", value: promptTestResults.embeddingsModel },
     { key: "Temperature", value: promptTestResults.temperature },
     { key: "Max Tokens", value: promptTestResults.maxTokens },
-    { key: "Num Responses", value: promptTestResults.numResponses },
   ];
-
-  // const handleRecalculateResultsClick = async () => {
-  //   setRecalcLoading(true);
-  //   try {
-  //     const response = await fetch(RECALCULATE_RESULTS_API_ENDPOINT, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         promptTestResultsId: promptTestResults.id,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       notifications.show({
-  //         title: `Recalculation error due to HTTP error: ${response.status} - ${response.statusText}`,
-  //         message: `Error: ${await response.json()}`,
-  //         color: "red",
-  //       });
-  //       console.error("HTTP error:", response.status);
-  //       return;
-  //     }
-
-  //     console.log(response.json()); // TODO: Do something with this
-  //     notifications.show({
-  //       title: "Recalculation initiated",
-  //       message: "Please refresh the page to see the updated results.",
-  //       color: "teal",
-  //     });
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     notifications.show({
-  //       title: "Tests failed",
-  //       message: (error as Error).message ?? "An unknown error occurred.",
-  //       color: "red",
-  //     });
-  //   }
-  //   setRecalcLoading(false);
-  // };
 
   function calculateAverageCosineSimilarityScore(
     testCaseResults: TestCaseResult[]
@@ -191,12 +150,6 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
               </Table>
             </HoverCardDropdown>
           </HoverCard>
-          {/* <Button
-            onClick={handleRecalculateResultsClick}
-            leftSection={<IconRefresh />}
-          >
-            Refresh/Recalc
-          </Button> */}
         </Box>
       </Group>
       {promptTestResults.dateCreatedUtc && (

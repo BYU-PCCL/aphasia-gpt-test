@@ -2,7 +2,6 @@ import * as logger from "firebase-functions/logger";
 import {onRequest} from "firebase-functions/v2/https";
 
 import {PromptCandidate, TestCase, TestResultsStatus} from "../../shared/types";
-import {PRODUCTION_APP_URL} from "./constants";
 import {
   deletePromptTestResultsRecord,
   getPromptById,
@@ -15,7 +14,6 @@ import {processTestCase} from "./processTestCase";
 const OPENAI_MODEL = "gpt-3.5-turbo";
 const TEMPERATURE = 0.7;
 const MAX_TOKENS = 50;
-const NUM_RESPONSES = 4;
 const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
 
 /**
@@ -25,7 +23,7 @@ const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
  * The function returns a response immediately after starting the tests.
  */
 export const startPromptTestsHandler = onRequest(
-  {cors: PRODUCTION_APP_URL},
+  {cors: true},
   async (req, res) => {
     const data = req.body;
     const promptId = data.promptId;
@@ -48,8 +46,7 @@ export const startPromptTestsHandler = onRequest(
       OPENAI_MODEL,
       EMBEDDING_MODEL_NAME,
       TEMPERATURE,
-      MAX_TOKENS,
-      NUM_RESPONSES
+      MAX_TOKENS
     );
 
     if (!promptTestResults.id) {
@@ -59,21 +56,23 @@ export const startPromptTestsHandler = onRequest(
 
     try {
       testCases.forEach((testCase: TestCase) => {
-        // Do not `await` here so that the tests can all start and we can return a response while they run.
+        // Do not `await` here so that the tests can all start and we can
+        //  return a response while they run.
         processTestCase(prompt, testCase, promptTestResults).catch((error) => {
           logger.error(`Error running test case ${testCase.id}: ${error}`);
         });
       });
     } catch (error) {
       logger.error(`Error starting tests for prompt ${promptId}: ${error}`);
+
       // delete the prompt test results record if there was an error
       // try setting its status to ERROR if that deletion failed
-
       try {
         await deletePromptTestResultsRecord(promptTestResults.id);
       } catch (error) {
         logger.error(
-          `Error deleting prompt test results record ${promptTestResults.id}: ${error}`
+          `Error deleting prompt test results
+            record ${promptTestResults.id}: ${error}`
         );
         await updatePromptTestResultsStatus(
           promptTestResults.id,

@@ -29,6 +29,12 @@ export function getPromptTestResultsRef() {
   return db.ref("/prompt-testing/results");
 }
 
+/**
+ * Get a reference to a test case result in the Realtime DB.
+ * @param {string} testResultsId The ID of the test results record.
+ * @param {string} testCaseId The ID of the test case.
+ * @return {admin.database.Reference} The reference to the test case result.
+ */
 export function getTestCaseResultRef(
   testResultsId: string,
   testCaseId: string
@@ -122,7 +128,6 @@ export async function getPromptById(
  * @param {string} embeddingsModelName The embeddings model to use.
  * @param {number} temperature The temperature to use.
  * @param {number} maxTokens The maximum number of tokens to generate.
- * @param {number} numResponses The number of responses to generate per
  *  test case.
  * @return {Promise<string>} The ID of the new test results record.
  */
@@ -132,8 +137,7 @@ export async function initializePromptTestResultsRecord(
   model: string,
   embeddingsModelName: string,
   temperature: number,
-  maxTokens: number,
-  numResponses: number
+  maxTokens: number
 ): Promise<PromptTestResults> {
   const curDateTime = getUnixTimestamp();
   const testCaseResults: Record<string, TestCaseResult> = {};
@@ -152,7 +156,6 @@ export async function initializePromptTestResultsRecord(
     embeddingsModel: embeddingsModelName,
     temperature: temperature,
     maxTokens: maxTokens,
-    numResponses: numResponses,
     testCaseResults: testCaseResults,
     dateCreatedUtc: curDateTime,
     dateUpdatedUtc: curDateTime,
@@ -256,17 +259,23 @@ export async function updateTestCaseResultStatus(
   status: TestResultsStatus
 ): Promise<void> {
   logger.info(
-    `Updating status of test case ${testCaseId} in test results ${testResultsId} to ${status}`
+    `Updating status of test case ${testCaseId} in test results 
+      ${testResultsId} to ${status}`
   );
   const resultRef = getTestCaseResultRef(testResultsId, testCaseId);
   await resultRef.update({status: status});
 }
 
+/**
+ * Set the average cosine similarity score for a test results record.
+ * @param {string} testResultsId The ID of the test results record.
+ */
 export async function setAverageCosineSimilarityScore(
   testResultsId: string
 ): Promise<void> {
   logger.info(
-    `Calculating average cosine similarity score for test results ${testResultsId}`
+    `Calculating average cosine similarity score for test
+      results ${testResultsId}`
   );
   const promptTestResults = await getPromptTestResultsById(testResultsId);
   if (!promptTestResults) {
@@ -279,7 +288,8 @@ export async function setAverageCosineSimilarityScore(
   const average = scores.reduce((acc, score) => acc + score, 0) / scores.length;
 
   logger.info(
-    `Average cosine similarity score for test results ${testResultsId}: ${average}`
+    `Average cosine similarity score for test 
+      results ${testResultsId}: ${average}`
   );
   const resultRef = getPromptTestResultsRef().child(testResultsId);
   await resultRef.update({averageCosineSimilarityScore: average});
