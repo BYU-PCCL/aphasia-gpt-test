@@ -11,8 +11,6 @@ export enum TestResultsStatus {
 export interface PromptTestResults {
   /** The unique Firebase identifier of the test case. */
   id?: string;
-  /** The status of the test results */
-  status: TestResultsStatus;
   /** The unique Firebase identifier of the prompt */
   promptId: string;
   /** The name of the language model used */

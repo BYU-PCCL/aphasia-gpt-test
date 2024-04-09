@@ -15,6 +15,7 @@ import {
   TestCase,
 } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
+import { getPromptTestResultsStatus } from "../../../../shared/utils/statusUtils";
 
 const Tests: React.FC = () => {
   const [results, isResultsLoading] = useDataFetcher<PromptTestResults>({
@@ -47,7 +48,7 @@ const Tests: React.FC = () => {
           ? unixTimestampToDateString(test.dateCreatedUtc)
           : test.id ?? "ERROR displaying test date"
       }
-      getDescription={(test) => test.status}
+      getDescription={(test) => getPromptTestResultsStatus(test)}
     />
   );
 };

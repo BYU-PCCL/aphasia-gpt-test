@@ -150,7 +150,6 @@ export async function initializePromptTestResultsRecord(
     }
   }
   const promptTestResults: PromptTestResults = {
-    status: TestResultsStatus.IN_PROGRESS,
     promptId: promptId,
     llmModel: model,
     embeddingsModel: embeddingsModelName,
