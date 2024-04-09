@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { RECALCULATE_RESULTS_API_ENDPOINT } from "@/firebase";
 import {
   Accordion,
   AccordionControl,
@@ -26,13 +25,11 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import {
   IconCircleCheck,
   IconDots,
   IconExclamationCircle,
   IconInfoCircle,
-  IconRefresh,
 } from "@tabler/icons-react";
 
 import {
@@ -56,7 +53,6 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
   testCases,
   prompts,
 }) => {
-  const [recalcLoading, setRecalcLoading] = useState(false);
   const infoTableRowData = [
     { key: "LLM Model", value: promptTestResults.llmModel },
     { key: "Embeddings Model", value: promptTestResults.embeddingsModel },

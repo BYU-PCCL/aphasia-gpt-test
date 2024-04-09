@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
-import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDOhZYlfsTk_35E2KiHIYw1TB52KwZksMM",
@@ -35,11 +34,8 @@ export const SET_PROMPT_API_ENDPOINT = isProduction
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/setPrompt";
 // Tests
 export const GET_ALL_TESTS_API_ENDPOINT = isProduction
-  ? ""
+  ? "https://getalltests-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTests";
 export const START_PROMPT_TESTS_API_ENDPOINT = isProduction
   ? "https://testprompt-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/startPromptTests";
-export const RECALCULATE_RESULTS_API_ENDPOINT = isProduction
-  ? ""
-  : "http://127.0.0.1:5000/brocas-userdb/us-central1/checkAllTestCaseResultsStatus";
