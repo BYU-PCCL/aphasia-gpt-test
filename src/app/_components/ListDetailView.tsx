@@ -55,7 +55,7 @@ const ListDetailView = <T,>({
     <Flex h="100%" direction={{ base: "column", sm: "row" }} gap={30}>
       {isEditing ? (
         EditComponent && (
-          <Container size="xs">
+          <Container size="lg" w={400}>
             <EditComponent closeEdit={() => setIsEditing(false)} />
           </Container>
         )

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Checkbox, Group, Stack, Text } from "@mantine/core";
-import { useForm, UseFormReturnType } from "@mantine/form";
+import { UseFormReturnType } from "@mantine/form";
 
 interface ItemEditProps<T, FormReturnType> {
   closeEdit: () => void;

@@ -1,6 +1,16 @@
 import { SET_PROMPT_API_ENDPOINT } from "@/firebase";
-import { Textarea } from "@mantine/core";
+import {
+  Box,
+  Container,
+  Group,
+  List,
+  ListItem,
+  Paper,
+  Text,
+  Textarea,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { IconAlertTriangle } from "@tabler/icons-react";
 
 import { encodedPromptParams, PromptCandidate } from "../../../../shared/types";
 import ItemEdit from "../ItemEdit";
@@ -62,6 +72,30 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
             autosize
             {...form.getInputProps("prompt")}
           />
+          <Paper radius="md" p="md" withBorder>
+            <Group align="center" wrap="nowrap">
+              <IconAlertTriangle color="orange" />
+              <Text>
+                When writing a prompt, consider the following regarding LLM
+                response processing:
+              </Text>
+            </Group>
+            <List pl="lg">
+              <ListItem>
+                Only 1 response is explicitly requested from the LLM in the API
+                request
+              </ListItem>
+              <ListItem>Newlines ("\n") separate completions</ListItem>
+              <ListItem>
+                Completions are stripped of any quote characters (single or
+                double)
+              </ListItem>
+              <ListItem>
+                "Prediction n: " prefixes are removed from completions (where
+                "n" is a number)
+              </ListItem>
+            </List>
+          </Paper>
         </>
       )}
     </ItemEdit>
