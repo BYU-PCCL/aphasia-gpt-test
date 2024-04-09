@@ -130,8 +130,18 @@ async function runPromptTestCase(
 ): Promise<{llmCompletions: string[]; cosineSimilarityScore: number}> {
   logger.info(`Running test case ${testCase.id} against prompt ${prompt.id}`);
 
+  const formattedPrompt = replaceMultiple(prompt.prompt, {
+    "{name}": testCase.bio.name,
+    "{age}": testCase.bio.age.toString(),
+    "{about_me}": testCase.bio.aboutMe,
+    "{conversation_type}": testCase.context.conversationType,
+    "{setting}": testCase.context.setting,
+    "{tone}": testCase.context.tone,
+    "{utterance}": testCase.utterance,
+  });
+
   const gptCompletions = await getGptCompletion(
-    prompt.prompt,
+    formattedPrompt,
     openaiModel,
     temperature,
     maxTokens
@@ -149,6 +159,25 @@ async function runPromptTestCase(
     llmCompletions: gptCompletions,
     cosineSimilarityScore: cosineSimilarity(avgGptEmbedding, avgGoodEmbedding),
   };
+}
+
+/**
+ * Replace multiple substrings in a string.
+ * @param {string} original The original string.
+ * @param {Object.<string, string>} replacements The replacements to make.
+ * @return {string} The string with the replacements made.
+ */
+function replaceMultiple(
+  original: string,
+  replacements: {[key: string]: string}
+): string {
+  let result = original;
+  for (const key in replacements) {
+    if (Object.prototype.hasOwnProperty.call(replacements, key)) {
+      result = result.split(key).join(replacements[key]);
+    }
+  }
+  return result;
 }
 
 /**
