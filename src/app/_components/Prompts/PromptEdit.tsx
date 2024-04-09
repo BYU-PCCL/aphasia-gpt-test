@@ -85,14 +85,16 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
                 Only 1 response is explicitly requested from the LLM in the API
                 request
               </ListItem>
-              <ListItem>Newlines ("\n") separate completions</ListItem>
+              <ListItem>
+                Newlines (&quot;\n&quot;) separate completions
+              </ListItem>
               <ListItem>
                 Completions are stripped of any quote characters (single or
                 double)
               </ListItem>
               <ListItem>
-                "Prediction n: " prefixes are removed from completions (where
-                "n" is a number)
+                &quot;Prediction n: &quot; prefixes are removed from completions
+                (where &quot;n&quot; is a number)
               </ListItem>
             </List>
           </Paper>
