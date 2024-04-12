@@ -36,13 +36,19 @@ export class OpenAIService {
     } catch (error) {
       if (error instanceof OpenAI.APIError) {
         if (error.status) {
-          throw new HttpError("OpenAI", error.status, error.message);
-        } else {
-          throw new Error(`OpenAI API error: ${error.message}`);
+          // If 401, modify error message to not include the API key
+          if (error.status === 401) {
+            throw new HttpError(
+              "OpenAI",
+              error.status,
+              "Authorization error. Check your API key."
+            );
+          } else {
+            throw new HttpError("OpenAI", error.status, error.message);
+          }
         }
-      } else {
-        throw new Error(`Error getting GPT completion: ${error}`);
       }
+      throw new Error(`OpenAI API error: ${error}`);
     }
   }
 
