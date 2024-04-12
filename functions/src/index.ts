@@ -1,9 +1,9 @@
-import {getAllPromptsHandler} from "./getAllPrompts";
-import {getAllTestCasesHandler} from "./getAllTestCases";
-import {getAllTestsHandler} from "./getAllTests";
-import {setPromptHandler} from "./setPrompt";
-import {setTestCaseHandler} from "./setTestCase";
-import {startPromptTestsHandler} from "./startPromptTests";
+import {getAllPromptsHandler} from "./handlers/getAllPrompts";
+import {getAllTestCasesHandler} from "./handlers/getAllTestCases";
+import {getAllTestsHandler} from "./handlers/getAllTests";
+import {setPromptHandler} from "./handlers/setPrompt";
+import {setTestCaseHandler} from "./handlers/setTestCase";
+import {startPromptTestsHandler} from "./handlers/startPromptTests";
 
 //  ~~~~ Firebase Function API Endpoints ~~~~ //
 

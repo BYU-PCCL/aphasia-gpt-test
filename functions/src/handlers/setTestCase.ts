@@ -1,9 +1,9 @@
 import * as logger from "firebase-functions/logger";
 import {onRequest} from "firebase-functions/v2/https";
 
-import {isTestCase, TestCase} from "../../shared/types";
-import {getUnixTimestamp} from "../../shared/utils";
-import {getCaseListRef} from "./firebaseUtils";
+import {isTestCase, TestCase} from "../../../shared/types";
+import {getUnixTimestamp} from "../../../shared/utils";
+import {getCaseListRef} from "../firebaseUtils";
 
 /**
  * Add a test case to the Realtime DB.

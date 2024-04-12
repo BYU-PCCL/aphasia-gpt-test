@@ -1,15 +1,19 @@
 import * as logger from "firebase-functions/logger";
 import {onRequest} from "firebase-functions/v2/https";
 
-import {PromptCandidate, TestCase, TestResultsStatus} from "../../shared/types";
+import {
+  PromptCandidate,
+  TestCase,
+  TestResultsStatus,
+} from "../../../shared/types";
 import {
   deletePromptTestResultsRecord,
   getPromptById,
   initializePromptTestResultsRecord,
   readTestCases,
   updatePromptTestResultsStatus,
-} from "./firebaseUtils";
-import {processTestCase} from "./processTestCase";
+} from "../firebaseUtils";
+import {processTestCase} from "../processTestCase";
 
 const OPENAI_MODEL = "gpt-3.5-turbo";
 const TEMPERATURE = 0.7;

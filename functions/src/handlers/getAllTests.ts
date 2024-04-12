@@ -1,6 +1,6 @@
 import {onRequest} from "firebase-functions/v2/https";
 
-import {readTestResults} from "./firebaseUtils";
+import {readTestResults} from "../firebaseUtils";
 
 /**
  * Get all test cases from the Realtime DB.

@@ -1,9 +1,9 @@
 import * as logger from "firebase-functions/logger";
 import {onRequest} from "firebase-functions/v2/https";
 
-import {isPromptCandidate, PromptCandidate} from "../../shared/types";
-import {getUnixTimestamp} from "../../shared/utils";
-import {getPromptListRef} from "./firebaseUtils";
+import {isPromptCandidate, PromptCandidate} from "../../../shared/types";
+import {getUnixTimestamp} from "../../../shared/utils";
+import {getPromptListRef} from "../firebaseUtils";
 
 /**
  * Add a prompt to the Realtime DB.

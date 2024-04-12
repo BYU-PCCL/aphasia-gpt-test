@@ -1,6 +1,6 @@
 import {onRequest} from "firebase-functions/v2/https";
 
-import {readPrompts} from "./firebaseUtils";
+import {readPrompts} from "../firebaseUtils";
 
 /**
  * Get all prompts from the Realtime DB.
