@@ -51,6 +51,7 @@ Run the following from the root directory (builds the Firebase functions and sta
 npm run fb
 ```
 
+This command runs the emulator in debug mode, meaning that functions will execute in sequence rather than in parallel.
 You can view the Emulator UI at [http://localhost:4000](http://localhost:4000).
 
 #### Debug Firebase Functions

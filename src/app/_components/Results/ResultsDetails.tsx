@@ -194,6 +194,13 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
                         <Title order={6}>Status:</Title>
                         <Text>{testCaseResult.status}</Text>
                       </Box>
+                      {testCaseResult.status === TestResultsStatus.ERROR &&
+                        testCaseResult.error && (
+                          <Box pb="sm">
+                            <Title order={6}>Error:</Title>
+                            <Text>{testCaseResult.error}</Text>
+                          </Box>
+                        )}
                       <Box pb="sm">
                         <Title order={6}>Utterance:</Title>
                         <Text>{getTestCase(testCaseId)?.utterance}</Text>

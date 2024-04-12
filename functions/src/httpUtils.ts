@@ -64,4 +64,10 @@ export class HttpError extends Error {
     this.source = source;
     this.status = status;
   }
+
+  toString(): string {
+    return `Source: ${this.source}, Status: ${
+      this.status
+    }, ${super.toString()}`;
+  }
 }

@@ -27,8 +27,6 @@ export interface PromptTestResults {
   dateCreatedUtc?: number;
   /** Unix timestamp of when the test result was last updated */
   dateUpdatedUtc?: number;
-  /** The average cosine similarity score of the responses generated */
-  averageCosineSimilarityScore?: number;
 }
 
 export interface TestCaseResult {
@@ -36,10 +34,12 @@ export interface TestCaseResult {
   testCaseId: string;
   /** The status of the test case result */
   status: TestResultsStatus;
+  /** Error message. Only applies if status is ERROR */
+  error: string | null;
   /** The cosine similarity score of the generated response */
   cosineSimilarityScore?: number;
   /** The AI-generated responses */
   llmCompletions?: string[];
-  /** Unix timestamp of when the test case execution was completed */
-  dateCompletedUtc?: number;
+  /** Unix timestamp of when the test case execution was last updated */
+  dateUpdatedUtc?: number;
 }

@@ -43,7 +43,7 @@ export async function processTestCase(
   let llmCompletions: string[] = [];
   let cosineSimilarityScore = -Infinity;
 
-  updateTestCaseResultStatus(
+  await updateTestCaseResultStatus(
     promptTestResults.id,
     testCase.id,
     TestResultsStatus.IN_PROGRESS
@@ -89,7 +89,8 @@ export async function processTestCase(
     await updateTestCaseResultStatus(
       promptTestResults.id,
       testCase.id,
-      TestResultsStatus.ERROR
+      TestResultsStatus.ERROR,
+      error instanceof Error ? error.toString() : "unknown error"
     );
   }
 }

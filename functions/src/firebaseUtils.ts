@@ -146,6 +146,7 @@ export async function initializePromptTestResultsRecord(
       testCaseResults[testCase.id] = {
         testCaseId: testCase.id,
         status: TestResultsStatus.NOT_STARTED,
+        error: null,
       };
     }
   }
@@ -227,8 +228,9 @@ export async function saveTestCaseResult(
     testCaseId: testCaseId,
     status: TestResultsStatus.COMPLETE,
     cosineSimilarityScore: cosineSimilarityScore,
+    error: null,
     llmCompletions: llmCompletions,
-    dateCompletedUtc: getUnixTimestamp(),
+    dateUpdatedUtc: getUnixTimestamp(),
   };
   const resultRef = getTestCaseResultRef(promptTestResultsId, testCaseId);
   await resultRef.set(testCaseResult);
@@ -246,50 +248,30 @@ export async function deletePromptTestResultsRecord(
 }
 
 /**
- * Update the status of a test case result.
+ * Update the status (and error message) of a test case result.
  * @param {string} testResultsId The ID of the test results record.
  * @param {string} testCaseId The ID of the test case.
- * @param {TestResultsStatus} status The new status to set.
+ * @param {TestResultsStatus} status The new status to set. If not ERROR, the error message is ignored and set to null.
+ * @param {string} error An error message. Ignored and set to null unless the status is being set to ERROR.
  * @return {Promise<void>} A promise that resolves when the update is complete.
  */
 export async function updateTestCaseResultStatus(
   testResultsId: string,
   testCaseId: string,
-  status: TestResultsStatus
+  status: TestResultsStatus,
+  error: string | null = null
 ): Promise<void> {
   logger.info(
     `Updating status of test case ${testCaseId} in test results 
       ${testResultsId} to ${status}`
   );
   const resultRef = getTestCaseResultRef(testResultsId, testCaseId);
-  await resultRef.update({status: status});
-}
-
-/**
- * Set the average cosine similarity score for a test results record.
- * @param {string} testResultsId The ID of the test results record.
- */
-export async function setAverageCosineSimilarityScore(
-  testResultsId: string
-): Promise<void> {
-  logger.info(
-    `Calculating average cosine similarity score for test
-      results ${testResultsId}`
-  );
-  const promptTestResults = await getPromptTestResultsById(testResultsId);
-  if (!promptTestResults) {
-    throw new Error(`Prompt test results with id ${testResultsId} not found`);
+  if (status !== TestResultsStatus.ERROR) {
+    error = null;
   }
-
-  const scores: number[] = Object.values(promptTestResults.testCaseResults)
-    .map((result) => result.cosineSimilarityScore)
-    .filter((score): score is number => score !== null && score !== undefined);
-  const average = scores.reduce((acc, score) => acc + score, 0) / scores.length;
-
-  logger.info(
-    `Average cosine similarity score for test 
-      results ${testResultsId}: ${average}`
-  );
-  const resultRef = getPromptTestResultsRef().child(testResultsId);
-  await resultRef.update({averageCosineSimilarityScore: average});
+  await resultRef.update({
+    status: status,
+    error: error,
+    dateUpdatedUtc: getUnixTimestamp(),
+  });
 }
