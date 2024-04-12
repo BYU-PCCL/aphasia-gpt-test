@@ -6,11 +6,11 @@ import {
   TestCase,
   TestResultsStatus,
 } from "../../../shared/types";
+import {TestCaseDatabaseService} from "../data/TestCaseDatabaseService";
 import {
   deletePromptTestResultsRecord,
   getPromptById,
   initializePromptTestResultsRecord,
-  readTestCases,
   updatePromptTestResultsStatus,
 } from "../firebaseUtils";
 import {processTestCase} from "../processTestCase";
@@ -26,9 +26,10 @@ const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
  * The test cases are processed asynchronously.
  * The function returns a response immediately after starting the tests.
  */
-export const startPromptTestsHandler = onRequest(
-  {cors: true},
-  async (req, res) => {
+export const startPromptTestsHandler = (
+  testCaseService: TestCaseDatabaseService
+) =>
+  onRequest({cors: true}, async (req, res) => {
     const data = req.body;
     const promptId = data.promptId;
     if (!promptId) {
@@ -42,7 +43,7 @@ export const startPromptTestsHandler = onRequest(
       return;
     }
 
-    const testCases: TestCase[] = await readTestCases();
+    const testCases: TestCase[] = await testCaseService.getAll();
 
     const promptTestResults = await initializePromptTestResultsRecord(
       testCases,
@@ -91,5 +92,4 @@ export const startPromptTestsHandler = onRequest(
     }
 
     res.send({message: `Started tests for prompt ${promptId}`});
-  }
-);
+  });

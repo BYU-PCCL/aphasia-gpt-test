@@ -14,14 +14,6 @@ admin.initializeApp();
 export const db = admin.database();
 
 /**
- * Get a reference to the test cases in the Realtime DB.
- * @return {admin.database.Reference} The reference to the test cases.
- */
-export function getCaseListRef() {
-  return db.ref("/prompt-testing/cases");
-}
-
-/**
  * Get a reference to the prompt test results in the Realtime DB.
  * @return {admin.database.Reference} The reference to the prompt test results.
  */
@@ -51,24 +43,6 @@ export function getTestCaseResultRef(
  */
 export function getPromptListRef() {
   return db.ref("/prompt-testing/prompts");
-}
-
-/**
- * Read all test cases from the Realtime DB.
- * @return {Promise<TestCase[]>} The list of test cases.
- */
-export async function readTestCases(): Promise<TestCase[]> {
-  const caseListSnapshot = await getCaseListRef().once("value");
-  const caseList = caseListSnapshot.val();
-  let testCases: TestCase[] = [];
-  if (caseList) {
-    testCases = Object.keys(caseList).map((key) => {
-      const testCase: TestCase = caseList[key];
-      testCase.id = key;
-      return testCase;
-    });
-  }
-  return testCases;
 }
 
 /**
@@ -182,19 +156,6 @@ export async function getPromptTestResultsById(
 ): Promise<PromptTestResults | null> {
   const results = await readTestResults();
   return results.find((result) => result.id === promptTestResultsId) || null;
-}
-
-/**
- * Get a test case by ID.
- * @param {string} testCaseId The ID of the test case to get.
- * @return {Promise<TestCase | null>} The test case with the given ID,
- *  or null if not found.
- */
-export async function getTestCaseById(
-  testCaseId: string
-): Promise<TestCase | null> {
-  const cases = await readTestCases();
-  return cases.find((testCase) => testCase.id === testCaseId) || null;
 }
 
 /**
