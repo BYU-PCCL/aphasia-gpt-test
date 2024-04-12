@@ -2,7 +2,6 @@ import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
 
 import {
-  PromptCandidate,
   PromptTestResults,
   TestCase,
   TestCaseResult,
@@ -38,14 +37,6 @@ export function getTestCaseResultRef(
 }
 
 /**
- * Get a reference to the prompts in the Realtime DB.
- * @return {admin.database.Reference} The reference to the prompts.
- */
-export function getPromptListRef() {
-  return db.ref("/prompt-testing/prompts");
-}
-
-/**
  * Read all test results from the Realtime DB.
  * @return {Promise<PromptTestResults[]>} The list of test results.
  */
@@ -61,37 +52,6 @@ export async function readTestResults(): Promise<PromptTestResults[]> {
     });
   }
   return testResults;
-}
-
-/**
- * Read all prompts from the Realtime DB.
- * @return {Promise<PromptCandidate[]>} The list of prompts.
- */
-export async function readPrompts(): Promise<PromptCandidate[]> {
-  const promptListSnapshot = await getPromptListRef().once("value");
-  const promptList = promptListSnapshot.val();
-  let prompts: PromptCandidate[] = [];
-  if (promptList) {
-    prompts = Object.keys(promptList).map((key) => {
-      const prompt: PromptCandidate = promptList[key];
-      prompt.id = key;
-      return prompt;
-    });
-  }
-  return prompts;
-}
-
-/**
- * Get a prompt by ID.
- * @param {string} promptId The ID of the prompt to get.
- * @return {Promise<PromptCandidate | null>} The prompt with the given ID,
- *  or null if not found.
- */
-export async function getPromptById(
-  promptId: string
-): Promise<PromptCandidate | null> {
-  const prompts: PromptCandidate[] = await readPrompts();
-  return prompts.find((prompt) => prompt.id === promptId) || null;
 }
 
 /**

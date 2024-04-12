@@ -1,3 +1,4 @@
+import {PromptDatabaseService} from "./data/PromptDatabaseService";
 import {TestCaseDatabaseService} from "./data/TestCaseDatabaseService";
 import {db} from "./firebaseUtils";
 import {getAllPromptsHandler} from "./handlers/getAllPrompts";
@@ -11,6 +12,9 @@ import {startPromptTestsHandler} from "./handlers/startPromptTests";
 // const db = admin.database();
 const testCaseDatabaseService: TestCaseDatabaseService =
   new TestCaseDatabaseService(db);
+const promptDatabaseService: PromptDatabaseService = new PromptDatabaseService(
+  db
+);
 
 //  ~~~~ Firebase Function API Endpoints ~~~~ //
 
@@ -19,11 +23,12 @@ export const setTestCase = setTestCaseHandler(testCaseDatabaseService);
 export const getAllTestCases = getAllTestCasesHandler(testCaseDatabaseService);
 
 // Prompts
-export const setPrompt = setPromptHandler;
-export const getAllPrompts = getAllPromptsHandler;
+export const setPrompt = setPromptHandler(promptDatabaseService);
+export const getAllPrompts = getAllPromptsHandler(promptDatabaseService);
 
 // Tests
 export const getAllTests = getAllTestsHandler;
 export const startPromptTests = startPromptTestsHandler(
-  testCaseDatabaseService
+  testCaseDatabaseService,
+  promptDatabaseService
 );

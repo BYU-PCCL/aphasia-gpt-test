@@ -6,10 +6,10 @@ import {
   TestCase,
   TestResultsStatus,
 } from "../../../shared/types";
+import {PromptDatabaseService} from "../data/PromptDatabaseService";
 import {TestCaseDatabaseService} from "../data/TestCaseDatabaseService";
 import {
   deletePromptTestResultsRecord,
-  getPromptById,
   initializePromptTestResultsRecord,
   updatePromptTestResultsStatus,
 } from "../firebaseUtils";
@@ -27,7 +27,8 @@ const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
  * The function returns a response immediately after starting the tests.
  */
 export const startPromptTestsHandler = (
-  testCaseService: TestCaseDatabaseService
+  testCaseService: TestCaseDatabaseService,
+  promptService: PromptDatabaseService
 ) =>
   onRequest({cors: true}, async (req, res) => {
     const data = req.body;
@@ -37,7 +38,7 @@ export const startPromptTestsHandler = (
       return;
     }
 
-    const prompt: PromptCandidate | null = await getPromptById(promptId);
+    const prompt: PromptCandidate | null = await promptService.get(promptId);
     if (!prompt) {
       res.status(400).send(`Prompt with id ${promptId} not found`);
       return;
