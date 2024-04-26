@@ -1,3 +1,5 @@
+import { DataItem } from "./";
+
 /**
  * The status of the test results
  */
@@ -8,10 +10,8 @@ export enum TestResultsStatus {
   ERROR = "Error",
 }
 
-export interface PromptTestResults {
-  /** The unique Firebase identifier of the test case. */
-  id?: string;
-  /** The unique Firebase identifier of the prompt */
+export interface PromptTestResults extends Partial<DataItem> {
+  /** The unique Firebase identifier of the prompt these test results are for */
   promptId: string;
   /** The name of the language model used */
   llmModel: string;
@@ -23,15 +23,11 @@ export interface PromptTestResults {
   maxTokens: number;
   /** A dictionary of test case Firebase ids and their results */
   testCaseResults: Record<string, TestCaseResult>;
-  /** Unix timestamp of when the test result was created */
-  dateCreatedUtc?: number;
-  /** Unix timestamp of when the test result was last updated */
-  dateUpdatedUtc?: number;
 }
 
-export interface TestCaseResult {
-  /** The unique Firebase identifier of the test case */
-  testCaseId: string;
+export interface TestCaseResult extends Partial<DataItem> {
+  /** The unique Firebase identifier of the test case this result is for */
+  id?: string;
   /** The status of the test case result */
   status: TestResultsStatus;
   /** Error message. Only applies if status is ERROR */
@@ -40,6 +36,4 @@ export interface TestCaseResult {
   cosineSimilarityScore?: number;
   /** The AI-generated responses */
   llmCompletions?: string[];
-  /** Unix timestamp of when the test case execution was last updated */
-  dateUpdatedUtc?: number;
 }

@@ -8,11 +8,7 @@ import {
 } from "../../../shared/types";
 import {PromptDatabaseService} from "../data/PromptDatabaseService";
 import {TestCaseDatabaseService} from "../data/TestCaseDatabaseService";
-import {
-  deletePromptTestResultsRecord,
-  initializePromptTestResultsRecord,
-  updatePromptTestResultsStatus,
-} from "../firebaseUtils";
+import {TestResultsDatabaseService} from "../data/TestResultsDatabaseService";
 import {processTestCase} from "../processTestCase";
 
 const OPENAI_MODEL = "gpt-3.5-turbo";
@@ -28,7 +24,8 @@ const EMBEDDING_MODEL_NAME = "WhereIsAI/UAE-Large-V1";
  */
 export const startPromptTestsHandler = (
   testCaseService: TestCaseDatabaseService,
-  promptService: PromptDatabaseService
+  promptService: PromptDatabaseService,
+  testResultsService: TestResultsDatabaseService
 ) =>
   onRequest({cors: true}, async (req, res) => {
     const data = req.body;
@@ -46,14 +43,15 @@ export const startPromptTestsHandler = (
 
     const testCases: TestCase[] = await testCaseService.getAll();
 
-    const promptTestResults = await initializePromptTestResultsRecord(
-      testCases,
-      promptId,
-      OPENAI_MODEL,
-      EMBEDDING_MODEL_NAME,
-      TEMPERATURE,
-      MAX_TOKENS
-    );
+    const promptTestResults =
+      await testResultsService.initializePromptTestResultsRecord(
+        testCases,
+        promptId,
+        OPENAI_MODEL,
+        EMBEDDING_MODEL_NAME,
+        TEMPERATURE,
+        MAX_TOKENS
+      );
 
     if (!promptTestResults.id) {
       res.status(500).send("Error initializing prompt test results record");
@@ -64,7 +62,12 @@ export const startPromptTestsHandler = (
       testCases.forEach((testCase: TestCase) => {
         // Do not `await` here so that the tests can all start and we can
         //  return a response while they run.
-        processTestCase(prompt, testCase, promptTestResults).catch((error) => {
+        processTestCase(
+          prompt,
+          testCase,
+          promptTestResults,
+          testResultsService
+        ).catch((error) => {
           logger.error(`Error running test case ${testCase.id}: ${error}`);
         });
       });
@@ -74,13 +77,15 @@ export const startPromptTestsHandler = (
       // delete the prompt test results record if there was an error
       // try setting its status to ERROR if that deletion failed
       try {
-        await deletePromptTestResultsRecord(promptTestResults.id);
+        await testResultsService.deletePromptTestResultsRecord(
+          promptTestResults.id
+        );
       } catch (error) {
         logger.error(
           `Error deleting prompt test results
             record ${promptTestResults.id}: ${error}`
         );
-        await updatePromptTestResultsStatus(
+        await testResultsService.updatePromptTestResultsStatus(
           promptTestResults.id,
           TestResultsStatus.ERROR
         );

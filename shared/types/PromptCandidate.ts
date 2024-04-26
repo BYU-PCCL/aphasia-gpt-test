@@ -1,8 +1,7 @@
-export interface PromptCandidate {
-  id?: string;
+import { DataItem } from "./";
+
+export interface PromptCandidate extends Partial<DataItem> {
   prompt: string;
-  dateCreatedUtc?: number;
-  dateUpdatedUtc?: number;
 }
 
 export function isPromptCandidate(

@@ -42,9 +42,14 @@ export async function retryOnFailure<T>(
         await new Promise((resolve) =>
           setTimeout(resolve, waitTimeSeconds * 1000)
         );
-      } else {
-        logger.error(`Error, but will not retry: ${error}`);
+      } else if (error instanceof HttpError) {
+        error.message = `HTTP error w/ status, will not retry: ${error.message}`;
+        logger.error(error);
         throw error;
+      } else {
+        const e = new Error(`Error, but will not retry: ${error}`);
+        logger.error(e);
+        throw e;
       }
     }
   }

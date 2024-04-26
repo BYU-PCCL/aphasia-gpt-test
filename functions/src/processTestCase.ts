@@ -8,7 +8,7 @@ import {
   TestCase,
   TestResultsStatus,
 } from "../../shared/types";
-import {saveTestCaseResult, updateTestCaseResultStatus} from "./firebaseUtils";
+import {TestResultsDatabaseService} from "./data/TestResultsDatabaseService";
 import {retryOnFailure} from "./httpUtils";
 import {HuggingFaceService} from "./services/HuggingFaceService";
 import {OpenAIService} from "./services/OpenAIService";
@@ -31,7 +31,8 @@ const HUGGINGFACE_WAIT_TIME_SECONDS = 5;
 export async function processTestCase(
   prompt: PromptCandidate,
   testCase: TestCase,
-  promptTestResults: PromptTestResults
+  promptTestResults: PromptTestResults,
+  testResultsService: TestResultsDatabaseService
 ) {
   if (!testCase.id) {
     throw new Error("Test case id is missing");
@@ -43,7 +44,7 @@ export async function processTestCase(
   let llmCompletions: string[] = [];
   let cosineSimilarityScore = -Infinity;
 
-  await updateTestCaseResultStatus(
+  await testResultsService.updateTestCaseResultStatus(
     promptTestResults.id,
     testCase.id,
     TestResultsStatus.IN_PROGRESS
@@ -78,7 +79,7 @@ export async function processTestCase(
       `Saving test case ${testCase.id} result with cosine similarity
           score: ${cosineSimilarityScore}`
     );
-    await saveTestCaseResult(
+    await testResultsService.saveTestCaseResult(
       promptTestResults.id,
       testCase.id,
       cosineSimilarityScore,
@@ -86,7 +87,7 @@ export async function processTestCase(
     );
   } catch (error) {
     logger.error(`Error running test case ${testCase.id}: ${error}`);
-    await updateTestCaseResultStatus(
+    await testResultsService.updateTestCaseResultStatus(
       promptTestResults.id,
       testCase.id,
       TestResultsStatus.ERROR,

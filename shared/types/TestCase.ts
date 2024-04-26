@@ -1,16 +1,6 @@
-export interface TestCase {
-  /**
-   * Firebase ID
-   */
-  id?: string;
-  /**
-   * Date as Unix timestamp
-   */
-  dateCreatedUtc?: number;
-  /**
-   * Date as Unix timestamp
-   */
-  dateUpdatedUtc?: number;
+import { DataItem } from "./";
+
+export interface TestCase extends Partial<DataItem> {
   context: Context;
   bio: Bio;
   utterance: string;

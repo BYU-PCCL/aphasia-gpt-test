@@ -1,11 +1,14 @@
 import {onRequest} from "firebase-functions/v2/https";
 
-import {readTestResults} from "../firebaseUtils";
+import {TestResultsDatabaseService} from "../data/TestResultsDatabaseService";
 
 /**
  * Get all test cases from the Realtime DB.
  */
-export const getAllTestsHandler = onRequest({cors: true}, async (req, res) => {
-  const testResults = await readTestResults();
-  res.send(testResults);
-});
+export const getAllTestsHandler = (
+  testResultsService: TestResultsDatabaseService
+) =>
+  onRequest({cors: true}, async (req, res) => {
+    const testResults = await testResultsService.getAll();
+    res.send(testResults);
+  });
