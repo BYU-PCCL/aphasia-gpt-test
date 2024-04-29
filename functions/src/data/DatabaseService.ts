@@ -1,3 +1,4 @@
+import {Reference} from "firebase-admin/database";
 import {Database} from "firebase-admin/lib/database/database";
 import * as logger from "firebase-functions/logger";
 
@@ -9,8 +10,8 @@ import {getUnixTimestamp} from "../../../shared/utils";
  * The dictionary in the DB must be a collection of items of type
  * T where the id of each item is the key in the dictionary.
  * @template T The type of the items in the dictionary.
- * @param {Database} db The Realtime DB instance.
- * @param {string} refPath The path to the dictionary in the Realtime DB.
+ * @param db The Realtime DB instance.
+ * @param refPath The path to the dictionary in the Realtime DB.
  */
 export class DatabaseService<T extends Partial<DataItem>> {
   private readonly db: Database;
@@ -83,9 +84,9 @@ export class DatabaseService<T extends Partial<DataItem>> {
 
   /**
    * Get a Reference to the Realtime DB dictionary for type T.
-   * @return {Reference} The reference to the dictionary.
+   * @return The reference to the dictionary.
    */
-  public getDictRef() {
+  public getDictRef(): Reference {
     return this.db.ref(this.dictRefPath);
   }
 }

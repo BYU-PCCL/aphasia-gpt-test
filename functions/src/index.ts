@@ -21,6 +21,9 @@ const testResultsDatabaseService: TestResultsDatabaseService =
   new TestResultsDatabaseService(db);
 
 //  ~~~~ Firebase Function API Endpoints ~~~~ //
+// In local development, the names of these exported functions are used as the
+// API endpoint names. In production, the deployed Firebase function URLs are
+// used instead (see the Firebase console).
 
 // Test Cases
 export const setTestCase = setTestCaseHandler(testCaseDatabaseService);

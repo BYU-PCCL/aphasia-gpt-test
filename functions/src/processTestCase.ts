@@ -24,9 +24,9 @@ const HUGGINGFACE_WAIT_TIME_SECONDS = 5;
 /**
  * Process a test case against a prompt.
  * The test case is run against the prompt, and the results are saved.
- * @param {PromptCandidate} prompt The prompt to test.
- * @param {TestCase} testCase The test case to run.
- * @param {PromptTestResults} promptTestResults The prompt test results.
+ * @param prompt The prompt to test.
+ * @param testCase The test case to run.
+ * @param promptTestResults The prompt test results.
  */
 export async function processTestCase(
   prompt: PromptCandidate,
@@ -100,15 +100,13 @@ export async function processTestCase(
  * Run a test case against a prompt, getting completions from the LLM and
  * calculating the cosine similarity of the embeddings of the completions
  * and the good completions.
- * @param {PromptCandidate} prompt The prompt to test.
- * @param {TestCase} testCase The test case to run.
- * @param {string} openaiModel The OpenAI model to use.
- * @param {string} embeddingsModelName The Hugging Face model to use
- *  for embeddings.
- * @param {number} temperature The temperature to use for the LLM.
- * @param {number} maxTokens The maximum number of tokens to generate.
- * @return {Promise<{llmCompletions: string[], cosineSimilarityScore: number}>}
- *  The completions from the LLM and the cosine similarity score.
+ * @param prompt The prompt to test.
+ * @param testCase The test case to run.
+ * @param openaiModel The OpenAI model to use.
+ * @param embeddingsModelName The Hugging Face model to use for embeddings.
+ * @param temperature The temperature to use for the LLM.
+ * @param maxTokens The maximum number of tokens to generate.
+ * @return The completions from the LLM and the cosine similarity score.
  */
 async function runPromptTestCase(
   prompt: PromptCandidate,
@@ -174,9 +172,9 @@ async function runPromptTestCase(
 
 /**
  * Replace multiple substrings in a string.
- * @param {string} original The original string.
- * @param {Object.<string, string>} replacements The replacements to make.
- * @return {string} The string with the replacements made.
+ * @param original The original string.
+ * @param replacements The replacements to make.
+ * @return The string with the replacements made.
  */
 function replaceMultiple(
   original: string,
@@ -192,11 +190,10 @@ function replaceMultiple(
 }
 
 /**
- * Calculate the cosine similarity between two vectors.
- * Output is in the range [-1, 1].
- * @param {number[]} A First vector
- * @param {number[]} B Second vector
- * @return {number} The cosine similarity between the two vectors.
+ * Calculate the cosine similarity score of two vectors. Output is in the range [-1, 1].
+ * @param A First vector
+ * @param B Second vector
+ * @return The cosine similarity score of the two vectors.
  */
 function cosineSimilarity(A: number[], B: number[]): number {
   const dotProduct = math.dot(A, B);
@@ -207,9 +204,9 @@ function cosineSimilarity(A: number[], B: number[]): number {
 }
 
 /**
- * Calculate the average of a list of vectors.
- * @param {Array<Array<number>>} vectors The list of vectors.
- * @return {Array<number>} The average of the vectors.
+ * Calculate the column-wise average of a list of vectors.
+ * @param vectors The list of vectors.
+ * @return A vector that is the average of the input vectors.
  */
 function averageOfVectors(vectors: number[][]): number[] {
   return vectors

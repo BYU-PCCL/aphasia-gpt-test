@@ -16,11 +16,11 @@ export class OpenAIService {
 
   /**
    * Get completions from the LLM.
-   * @param {string} prompt The prompt to use.
-   * @param {string} openaiModel The OpenAI model to use.
-   * @param {number} temperature The temperature to use.
-   * @param {number} maxTokens The maximum number of tokens to generate.
-   * @return {Promise<string[]>} The completions from the LLM.
+   * @param prompt The prompt to use.
+   * @param openaiModel The OpenAI model to use.
+   * @param temperature The temperature to use.
+   * @param maxTokens The maximum number of tokens to generate.
+   * @return The completions from the LLM.
    */
   public async getGptCompletion(
     prompt: string,
@@ -57,8 +57,8 @@ export class OpenAIService {
 
   /**
    * Extract completion texts from a chat completion, cleaning the strings.
-   * @param {ChatCompletion} chatCompletion The chat completion to extract from.
-   * @return {string[]} The completion texts.
+   * @param chatCompletion The chat completion to extract from.
+   * @return The completion texts.
    */
   private extractCompletionTexts(chatCompletion: ChatCompletion): string[] {
     const text: string | null = chatCompletion.choices[0].message.content;

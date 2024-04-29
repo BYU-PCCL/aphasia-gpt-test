@@ -19,7 +19,7 @@ export class PromptDatabaseService {
 
   /**
    * Read all prompts from the Realtime DB.
-   * @return {Promise<PromptTestResults[]>} The list of prompts.
+   * @return The list of prompts.
    */
   public async getAll(): Promise<PromptCandidate[]> {
     return await this.databaseService.getAll();
@@ -27,9 +27,8 @@ export class PromptDatabaseService {
 
   /**
    * Get a prompt by ID.
-   * @param {string} promptId The ID of the prompt to get.
-   * @return {Promise<PromptCandidate | null>} The prompt with the given ID,
-   *  or null if not found.
+   * @param promptId The ID of the prompt to get.
+   * @return The prompt with the given ID, or null if not found.
    */
   public async get(promptId: string): Promise<PromptCandidate | null> {
     return await this.databaseService.get(promptId);
@@ -37,8 +36,8 @@ export class PromptDatabaseService {
 
   /**
    * Add a prompt to the Realtime DB.
-   * @param {PromptCandidate} prompt The prompt to add.
-   * @return {Promise<PromptCandidate>} The added prompt.
+   * @param prompt The prompt to add.
+   * @return The added prompt.
    */
   public async add(prompt: PromptCandidate): Promise<PromptCandidate> {
     return await this.databaseService.add(prompt);

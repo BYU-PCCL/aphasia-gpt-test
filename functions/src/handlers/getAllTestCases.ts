@@ -4,7 +4,6 @@ import {TestCaseDatabaseService} from "../data/TestCaseDatabaseService";
 
 /**
  * Get all test cases from the Realtime DB.
- * @param {TestCaseDatabaseService} testCaseService The test case service.
  */
 export const getAllTestCasesHandler = (
   testCaseService: TestCaseDatabaseService

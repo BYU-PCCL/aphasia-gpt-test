@@ -1,3 +1,4 @@
+import {Reference} from "firebase-admin/database";
 import {Database} from "firebase-admin/lib/database/database";
 import * as logger from "firebase-functions/logger";
 
@@ -27,7 +28,7 @@ export class TestResultsDatabaseService {
 
   /**
    * Read all test results from the Realtime DB.
-   * @return {Promise<PromptTestResults[]>} The list of test results.
+   * @return The list of test results.
    */
   public async getAll(): Promise<PromptTestResults[]> {
     return await this.databaseService.getAll();
@@ -35,8 +36,8 @@ export class TestResultsDatabaseService {
 
   /**
    * Get a test result by ID.
-   * @param {string} promptTestResultsId The ID of the prompt test results record.
-   * @return {Promise<PromptTestResults | null>} The prompt test results record
+   * @param promptTestResultsId The ID of the prompt test results record.
+   * @return The prompt test results record
    * with the given ID, or null if not found.
    */
   public async get(
@@ -47,14 +48,14 @@ export class TestResultsDatabaseService {
 
   /**
    * Create a new test results record for a prompt.
-   * @param {TestCase[]} testCases The test cases to run against the prompt.
-   * @param {string} promptId The ID of the prompt to test.
-   * @param {string} model The LLM model to use.
-   * @param {string} embeddingsModelName The embeddings model to use.
-   * @param {number} temperature The temperature to use.
-   * @param {number} maxTokens The maximum number of tokens to generate.
+   * @param testCases The test cases to run against the prompt.
+   * @param promptId The ID of the prompt to test.
+   * @param model The LLM model to use.
+   * @param embeddingsModelName The embeddings model to use.
+   * @param temperature The temperature to use.
+   * @param maxTokens The maximum number of tokens to generate.
    *  test case.
-   * @return {Promise<string>} The ID of the new test results record.
+   * @return The ID of the new test results record.
    */
   public async initializePromptTestResultsRecord(
     testCases: TestCase[],
@@ -88,9 +89,9 @@ export class TestResultsDatabaseService {
 
   /**
    * Update the status of a prompt test results record.
-   * @param {string} promptTestResultsId The ID of the prompt test results record.
-   * @param {TestResultsStatus} status The new status to set.
-   * @return {Promise<void>} A promise that resolves when the update is complete.
+   * @param promptTestResultsId The ID of the prompt test results record.
+   * @param status The new status to set.
+   * @return A promise that resolves when the update is complete.
    */
   public async updatePromptTestResultsStatus(
     promptTestResultsId: string,
@@ -104,10 +105,10 @@ export class TestResultsDatabaseService {
 
   /**
    * Save the results of a test case to the DB. Sets the status to COMPLETE.
-   * @param {string} promptTestResultsId The ID of the prompt test results record.
-   * @param {string} testCaseId The ID of the test case.
-   * @param {number} cosineSimilarityScore The cosine similarity score.
-   * @param {string[]} llmCompletions The completions from the LLM.
+   * @param promptTestResultsId The ID of the prompt test results record.
+   * @param testCaseId The ID of the test case.
+   * @param cosineSimilarityScore The cosine similarity score.
+   * @param llmCompletions The completions from the LLM.
    */
   public async saveTestCaseResult(
     promptTestResultsId: string,
@@ -132,7 +133,7 @@ export class TestResultsDatabaseService {
 
   /**
    * Delete a prompt test results record from the DB.
-   * @param {string} promptTestResultsId The ID of the prompt test results record.
+   * @param promptTestResultsId The ID of the prompt test results record.
    */
   public async deletePromptTestResultsRecord(
     promptTestResultsId: string
@@ -145,12 +146,11 @@ export class TestResultsDatabaseService {
 
   /**
    * Update the status (and error message) of a test case result.
-   * @param {string} testResultsId The ID of the test results record.
-   * @param {string} testCaseId The ID of the test case.
-   * @param {TestResultsStatus} status The new status to set. If not ERROR, the error message
-   *  is ignored and set to null.
-   * @param {string} error An error message. Ignored and set to null unless the status is being set to ERROR.
-   * @return {Promise<void>} A promise that resolves when the update is complete.
+   * @param testResultsId The ID of the test results record.
+   * @param testCaseId The ID of the test case.
+   * @param status The new status to set. If not ERROR, the error message is ignored and set to null.
+   * @param error An error message. Ignored and set to null unless the status is being set to ERROR.
+   * @return A promise that resolves when the update is complete.
    */
   public async updateTestCaseResultStatus(
     testResultsId: string,
@@ -175,11 +175,14 @@ export class TestResultsDatabaseService {
 
   /**
    * Get a reference to a test case result in the Realtime DB.
-   * @param {string} testResultsId The ID of the test results record.
-   * @param {string} testCaseId The ID of the test case.
-   * @return {admin.database.Reference} The reference to the test case result.
+   * @param testResultsId The ID of the test results record.
+   * @param testCaseId The ID of the test case.
+   * @return The DB reference to the test case result.
    */
-  private getTestCaseResultRef(testResultsId: string, testCaseId: string) {
+  private getTestCaseResultRef(
+    testResultsId: string,
+    testCaseId: string
+  ): Reference {
     return this.databaseService
       .getDictRef()
       .child(testResultsId)

@@ -6,9 +6,9 @@ const ENGINE_OVERLOADED = 503;
 
 /**
  * Retry a function on certain HTTP failures. Handles logging and waiting between retries.
- * @param {() => Promise<T>} fn The function to run.
- * @param {number} maxRetries The maximum number of times to retry the function.
- * @param {number} waitTimeSeconds The number of seconds to wait between retries.
+ * @param fn The function to run.
+ * @param maxRetries The maximum number of times to retry the function.
+ * @param waitTimeSeconds The number of seconds to wait between retries.
  */
 export async function retryOnFailure<T>(
   fn: () => Promise<T>,
