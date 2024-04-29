@@ -4,6 +4,9 @@ import {ChatCompletion} from "openai/resources";
 
 import {HttpError} from "../httpUtils";
 
+/**
+ * A service to interact with the OpenAI API.
+ */
 export class OpenAIService {
   private readonly openAI: OpenAI;
 

@@ -1,5 +1,8 @@
 import {HttpError} from "../httpUtils";
 
+/**
+ * A service to interact with the Hugging Face API.
+ */
 export class HuggingFaceService {
   private readonly apiKey: string;
   private readonly BASE_URL: string =
@@ -11,9 +14,9 @@ export class HuggingFaceService {
 
   /**
    * Get embeddings for a list of texts.
-   * @param {Array<string>} texts The texts to get embeddings for.
-   * @param {string} embeddingsModelName The Hugging Face model to use.
-   * @return {Promise<Array<Array<number>>>} The embeddings for the texts.
+   * @param texts The texts to get embeddings for.
+   * @param embeddingsModelName The Hugging Face model to use.
+   * @return The embeddings for the texts.
    */
   public async embedTexts(
     texts: string[],
@@ -45,6 +48,11 @@ export class HuggingFaceService {
     }
   }
 
+  /**
+   * Extract embeddings from an API response.
+   * @param response The response to read from.
+   * @return The embeddings from the response.
+   */
   private async readEmbeddingsFromResponse(
     response: Response
   ): Promise<number[][]> {

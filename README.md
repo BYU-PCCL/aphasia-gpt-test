@@ -4,7 +4,7 @@ Simple interactive web app for testing the efficacy of different prompts for use
 
 ## Getting Started
 
-The main code for the React app is in the [src](./src/) directory.
+The main code for the React ([Next](https://nextjs.org/) w/ App Router) app is in the [src](./src/) directory.
 
 Firebase functions are defined in the [functions](./functions/) directory.
 
@@ -71,6 +71,8 @@ To deploy the Firebase functions, run the following from the root directory (not
 ```shell
 firebase deploy
 ```
+
+Deploying Firebase functions can be finicky, so you may need to run the command multiple times to get it to work. It seems Google is having some issues with the Firebase CLI, which is frustrating but out of our control.
 
 ## Starter Data
 

@@ -23,7 +23,7 @@ export class DatabaseService<T extends Partial<DataItem>> {
 
   /**
    * Read all items from the Realtime DB.
-   * @return {Promise<T[]>} The list of items.
+   * @return The list of items.
    */
   public async getAll(): Promise<T[]> {
     const snapshot = await this.getDictRef().get();
@@ -45,8 +45,8 @@ export class DatabaseService<T extends Partial<DataItem>> {
 
   /**
    * Read an item from the Realtime DB.
-   * @param {string} id The ID of the item.
-   * @return {Promise<T | null>} The item, or null if not found.
+   * @param id The ID of the item.
+   * @return The item, or null if not found.
    */
   public async get(id: string): Promise<T | null> {
     const snapshot = await this.getDictRef().child(id).get();
@@ -61,8 +61,8 @@ export class DatabaseService<T extends Partial<DataItem>> {
 
   /**
    * Add an item to the Realtime DB.
-   * @param {T} item The item to add.
-   * @return {Promise<T>} The added item.
+   * @param item The item to add.
+   * @return The added item.
    */
   public async add(item: T): Promise<T> {
     logger.info(`Adding an item (type ${typeof item}) to Realtime DB`, item);

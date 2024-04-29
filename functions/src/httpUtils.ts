@@ -55,22 +55,24 @@ export async function retryOnFailure<T>(
   }
 }
 
+/**
+ * An error class for HTTP errors.
+ */
 export class HttpError extends Error {
   public source: string;
   public status: number;
 
-  /**
-   * @param {string} source The resource that caused the error.
-   * @param {number} status The HTTP status code.
-   * @param {string} message The error message.
-   */
   constructor(source: string, status: number, message?: string) {
     super(message);
     this.source = source;
     this.status = status;
   }
 
-  toString(): string {
+  /**
+   * Get a string representation of the error.
+   * @return The string representation.
+   */
+  override toString(): string {
     return `Source: ${this.source}, Status: ${
       this.status
     }, ${super.toString()}`;

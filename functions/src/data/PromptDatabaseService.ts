@@ -3,6 +3,9 @@ import {Database} from "firebase-admin/lib/database/database";
 import {PromptCandidate} from "../../../shared/types";
 import {DatabaseService} from "./DatabaseService";
 
+/**
+ * Interacts with the Realtime DB to read and write prompt data.
+ */
 export class PromptDatabaseService {
   private readonly databaseService: DatabaseService<PromptCandidate>;
   private readonly DICT_REF_PATH: string = "/prompt-testing/prompts";

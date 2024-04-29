@@ -10,6 +10,9 @@ import {
 import {getUnixTimestamp} from "../../../shared/utils";
 import {DatabaseService} from "./DatabaseService";
 
+/**
+ * Interacts with the Realtime DB to read and write test results data.
+ */
 export class TestResultsDatabaseService {
   private readonly databaseService: DatabaseService<PromptTestResults>;
   private readonly DICT_REF_PATH: string = "/prompt-testing/results";
@@ -144,7 +147,8 @@ export class TestResultsDatabaseService {
    * Update the status (and error message) of a test case result.
    * @param {string} testResultsId The ID of the test results record.
    * @param {string} testCaseId The ID of the test case.
-   * @param {TestResultsStatus} status The new status to set. If not ERROR, the error message is ignored and set to null.
+   * @param {TestResultsStatus} status The new status to set. If not ERROR, the error message
+   *  is ignored and set to null.
    * @param {string} error An error message. Ignored and set to null unless the status is being set to ERROR.
    * @return {Promise<void>} A promise that resolves when the update is complete.
    */

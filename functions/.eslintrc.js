@@ -9,7 +9,6 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
-    "google",
     "plugin:@typescript-eslint/recommended",
   ],
   parser: "@typescript-eslint/parser",
@@ -20,10 +19,33 @@ module.exports = {
   ignorePatterns: [
     "/lib/**/*", // Ignore built files.
   ],
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "jsdoc"],
   rules: {
-    "quotes": ["error", "double"],
+    quotes: ["error", "double"],
     "import/no-unresolved": 0,
-    "indent": ["error", 2],
+    indent: ["error", 2],
+    "linebreak-style": 0,
+    "no-constant-condition": [
+      "error",
+      {
+        checkLoops: false,
+      },
+    ],
+    "max-len": ["error", {code: 120}],
+    "jsdoc/require-jsdoc": [
+      "error",
+      {
+        require: {
+          FunctionDeclaration: true,
+          MethodDefinition: true,
+          ClassDeclaration: true,
+          ArrowFunctionExpression: true,
+          FunctionExpression: true,
+        },
+        checkConstructors: false,
+      },
+    ],
+    "jsdoc/require-param-type": 0,
+    "jsdoc/require-returns-type": 0,
   },
 };
