@@ -66,6 +66,10 @@ Sometimes the Firebase Emulator Suite will continue to run (on the ports defined
 npm run kill:ports
 ```
 
+#### Additional Information
+
+There is additional information in [functions/README.md](./functions/README.md).
+
 ## Deploying the App
 
 ### React App
