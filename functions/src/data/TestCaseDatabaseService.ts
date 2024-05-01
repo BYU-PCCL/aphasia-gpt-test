@@ -35,6 +35,24 @@ export class TestCaseDatabaseService {
   }
 
   /**
+   * Get multiple test cases by their IDs.
+   * @param testCaseIds The IDs of the test cases to retrieve.
+   * @return An array of test cases corresponding to the provided IDs.
+   */
+  public async getMultiple(testCaseIds: string[]): Promise<TestCase[]> {
+    const testCases: TestCase[] = [];
+    for (const testCaseId of testCaseIds) {
+      if (testCaseId) { // Check if testCaseId is not undefined
+        const testCase = await this.databaseService.get(testCaseId);
+        if (testCase) {
+          testCases.push(testCase);
+        }
+      }
+    }
+    return testCases;
+  }
+
+  /**
    * Add a test case to the Realtime DB.
    * @param testCase The test case to add.
    * @return The added test case.
