@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { RETRY_PROMPT_TESTS_API_ENDPOINT } from "@/firebase";
 import {
   Accordion,
   AccordionControl,
@@ -42,6 +43,8 @@ import {
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { ItemDetailsProps } from "../ListDetailView";
 import PromptText from "../PromptText";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconCopy, IconTestPipe2 } from "@tabler/icons-react";
 
 interface ResultsDetailsProps extends ItemDetailsProps<PromptTestResults> {
   testCases: TestCase[];
@@ -156,6 +159,69 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
     </Group>
   );
 
+  const [retryTestsLoading, setRetryTestsLoading] = useState(false);
+
+  const retryTestsClick = async () => {
+    setRetryTestsLoading(true);
+    try {
+      if (testCases.length === 0) {
+        notifications.show({
+          title: "Tests failed",
+          message: "No test cases found.",
+          color: "red",
+        });
+        return;
+      }
+
+      const req_body = JSON.stringify({
+        resultsId: promptTestResults.id,
+        testCasesIds: Object.keys(promptTestResults.testCaseResults)
+      });
+      const response = await fetch(RETRY_PROMPT_TESTS_API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: req_body,
+      });
+
+      if (!response.ok) {
+        notifications.show({
+          title: `Tests failed due to HTTP error: ${response.status} - ${response.statusText}`,
+          message: `Error: ${await response.json()}`,
+          color: "red",
+        });
+        console.error("HTTP error:", response.status);
+        return;
+      }
+
+      // console.log(response.json()); // TODO: Do something with this
+      notifications.show({
+        title: "Tests started",
+        message: 'Monitor the results in the "Results" tab.',
+        color: "teal",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      notifications.show({
+        title: "Tests failed",
+        message: (error as Error).message ?? "An unknown error occurred.",
+        color: "red",
+      });
+    }
+    setRetryTestsLoading(false);
+  };
+
+  const hasError = (testResults: PromptTestResults): boolean => {
+    const testCaseResults = testResults.testCaseResults;
+    for (const testCaseId in testCaseResults) {
+      if (testCaseResults[testCaseId].status === TestResultsStatus.ERROR) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <div>
       <CardHeader />
@@ -167,6 +233,18 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
         </Text>
       </Spoiler>
       <Divider mt="sm" mb="sm" />
+      <Group justify="space-between" align="center">
+      {hasError(promptTestResults) && (
+        <Button
+          leftSection={<IconTestPipe2 />}
+          color="teal"
+          onClick={retryTestsClick}
+          loading={retryTestsLoading}
+        >
+          Retry Tests
+        </Button>
+      )}
+      </Group>
       <Container fluid p={0}>
         <Title order={4}>Test Case Results</Title>
         <Accordion variant="separated" multiple>
