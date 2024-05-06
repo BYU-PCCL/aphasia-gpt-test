@@ -173,9 +173,19 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
         return;
       }
 
+      let failedTestResults = [];
+      for (const testCaseId in promptTestResults.testCaseResults) {
+        if (
+          promptTestResults.testCaseResults[testCaseId].status ===
+          TestResultsStatus.ERROR
+        ) {
+          failedTestResults.push(testCaseId);
+        }
+      }
+
       const req_body = JSON.stringify({
         resultsId: promptTestResults.id,
-        testCasesIds: Object.keys(promptTestResults.testCaseResults)
+        testCasesIds: failedTestResults
       });
       const response = await fetch(RETRY_PROMPT_TESTS_API_ENDPOINT, {
         method: "POST",
