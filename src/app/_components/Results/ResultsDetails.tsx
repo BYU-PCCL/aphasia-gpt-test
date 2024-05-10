@@ -315,7 +315,6 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
       >
         Delete
       </Button>
-
       <Modal
         open={isDeleteModalOpen}
         onClose={closeDeleteModal}
