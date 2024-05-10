@@ -44,7 +44,7 @@ export class PromptDatabaseService {
   }
 
   /**
-  * Delete a prompt record from the DB.
+  * Delete a prompt record from the Realtime DB.
   * @param promptId The ID of the prompt record.
   */
   public async delete(promptId: string): Promise<void> {

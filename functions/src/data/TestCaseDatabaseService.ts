@@ -60,4 +60,15 @@ export class TestCaseDatabaseService {
   public async add(testCase: TestCase): Promise<TestCase> {
     return await this.databaseService.add(testCase);
   }
+
+  /**
+  * Delete a test case record from the Realtime DB.
+  * @param testCaseId The ID of the test case record.
+  */
+  public async delete(testCaseId: string): Promise<void> {
+    const resultRef = this.databaseService
+      .getDictRef()
+      .child(testCaseId);
+    await resultRef.remove();
+  }
 }

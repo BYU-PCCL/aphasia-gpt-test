@@ -12,6 +12,7 @@ import {startPromptTestsHandler} from "./handlers/startPromptTests";
 import {retryPromptTestsHandler} from "./handlers/retryPromptTests";
 import {deleteTestResultHandler} from "./handlers/deleteTestResult";
 import {deletePromptHandler} from "./handlers/deletePrompt";
+import {deleteTestCaseHandler} from "./handlers/deleteTestCase";
 
 
 admin.initializeApp();
@@ -32,6 +33,7 @@ const testResultsDatabaseService: TestResultsDatabaseService =
 // Test Cases
 export const setTestCase = setTestCaseHandler(testCaseDatabaseService);
 export const getAllTestCases = getAllTestCasesHandler(testCaseDatabaseService);
+export const deleteTestCase = deleteTestCaseHandler(testCaseDatabaseService);
 
 // Prompts
 export const setPrompt = setPromptHandler(promptDatabaseService);

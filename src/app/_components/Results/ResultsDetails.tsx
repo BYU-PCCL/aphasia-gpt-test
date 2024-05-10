@@ -32,7 +32,6 @@ import {
   IconExclamationCircle,
   IconInfoCircle,
   IconX,
-  IconXboxA,
 } from "@tabler/icons-react";
 
 import {
@@ -301,7 +300,6 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
       {!hasError(promptTestResults) && (
         <Button
           leftSection={<IconTestPipe2 />}
-          color="grey"
           disabled
         >
           Retry Tests

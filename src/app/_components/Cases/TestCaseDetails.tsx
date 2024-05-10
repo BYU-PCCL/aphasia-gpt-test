@@ -1,6 +1,11 @@
 import React from "react";
 
+import { useState } from "react";
+
+import { DELETE_TEST_CASE_API_ENDPOINT } from "@/firebase";
+
 import {
+  Button,
   Divider,
   Grid,
   Group,
@@ -11,13 +16,63 @@ import {
   Title,
 } from "@mantine/core";
 
+import {
+  IconCircleCheck,
+  IconDots,
+  IconEdit,
+  IconExclamationCircle,
+  IconInfoCircle,
+  IconX,
+} from "@tabler/icons-react";
+
 import { TestCase } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { ItemDetailsProps } from "../ListDetailView";
+import { notifications } from "@mantine/notifications";
+import { Modal } from "rsuite"; 
+import "rsuite/dist/rsuite.min.css"; 
 
 const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
   item: testCase,
 }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+  
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+  
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    // Perform delete action here
+    const req_body = JSON.stringify({
+      testCaseId: testCase.id
+    });
+    const response = await fetch(DELETE_TEST_CASE_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: req_body,
+    });
+
+    if (!response.ok) {
+      notifications.show({
+        title: `Tests failed due to HTTP error: ${response.status} - ${response.statusText}`,
+        message: `Error: ${await response.json()}`,
+        color: "red",
+      });
+      console.error("HTTP error:", response.status);
+      return;
+    }
+    setDeleteLoading(false);
+    closeDeleteModal();
+  };
+
   const header = (
     <Group justify="space-between" align="center">
       <Title order={3} lineClamp={2}>
@@ -57,6 +112,26 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
 
   const body = (
     <Grid>
+      <Grid.Col span={12}>
+      <Group align="center">
+          <Button
+            leftSection={<IconEdit />}
+            color="blue"
+            // onClick={runTestsClick}
+            // loading={runTestsLoading}
+          >
+            Edit Case
+          </Button>
+          <Button
+            leftSection={<IconX />}
+            color="red"
+            onClick={openDeleteModal}
+            loading={deleteLoading}
+          >
+            Delete
+        </Button>
+        </Group>
+      </Grid.Col>
       <Grid.Col span={12}>
         <Title order={4}>Utterance</Title>
         <Text>{testCase.utterance}</Text>
@@ -99,6 +174,22 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
       {header}
       <Divider mt="xs" mb="sm" />
       {body}
+      <Modal
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Confirm Delete"
+        size="sm"
+      >
+        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeDeleteModal} variant="light">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} loading={deleteLoading} color="red">
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
