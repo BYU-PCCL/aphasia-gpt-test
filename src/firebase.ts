@@ -32,6 +32,9 @@ export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
 export const SET_PROMPT_API_ENDPOINT = isProduction
   ? "https://setprompt-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/setPrompt";
+export const DELETE_PROMPT_API_ENDPOINT = isProduction
+  ? "https://deleteprompt-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/deletePrompt";
 // Tests
 export const GET_ALL_TESTS_API_ENDPOINT = isProduction
   ? "https://getalltests-hzvkkbfdsa-uc.a.run.app"

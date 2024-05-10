@@ -315,22 +315,6 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
       >
         Delete
       </Button>
-      <Modal
-        open={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        title="Confirm Delete"
-        size="sm"
-      >
-        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={closeDeleteModal} variant="light">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} loading={deleteLoading} color="red">
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
       </Group>
       <Container fluid p={0}>
         <Title order={4}>Test Case Results</Title>
@@ -394,6 +378,22 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
           })}
         </Accordion>
       </Container>
+      <Modal
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Confirm Delete"
+        size="sm"
+      >
+        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeDeleteModal} variant="light">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} loading={deleteLoading} color="red">
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

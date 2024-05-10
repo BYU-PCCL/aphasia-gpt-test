@@ -42,4 +42,15 @@ export class PromptDatabaseService {
   public async add(prompt: PromptCandidate): Promise<PromptCandidate> {
     return await this.databaseService.add(prompt);
   }
+
+  /**
+  * Delete a prompt record from the DB.
+  * @param promptId The ID of the prompt record.
+  */
+  public async delete(promptId: string): Promise<void> {
+    const resultRef = this.databaseService
+      .getDictRef()
+      .child(promptId);
+    await resultRef.remove();
+  }
 }
