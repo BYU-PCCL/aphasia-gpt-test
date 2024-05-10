@@ -298,6 +298,13 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
           Retry Tests
         </Button>
       )}
+      {!hasError(promptTestResults) && (
+        <Button
+          disabled
+          style={{ visibility: "hidden" }}
+        >
+      </Button>
+      )}
       <Button
         leftSection={<IconX />}
         color="red"
