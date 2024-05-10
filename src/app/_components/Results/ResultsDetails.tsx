@@ -287,7 +287,7 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
         </Text>
       </Spoiler>
       <Divider mt="sm" mb="sm" />
-      <Group justify="space-between" align="center">
+      <Group align="center">
       {hasError(promptTestResults) && (
         <Button
           leftSection={<IconTestPipe2 />}
@@ -300,9 +300,11 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
       )}
       {!hasError(promptTestResults) && (
         <Button
+          leftSection={<IconTestPipe2 />}
+          color="grey"
           disabled
-          style={{ visibility: "hidden" }}
         >
+          Retry Tests
       </Button>
       )}
       <Button
