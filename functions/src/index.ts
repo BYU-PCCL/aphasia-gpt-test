@@ -10,6 +10,8 @@ import {setPromptHandler} from "./handlers/setPrompt";
 import {setTestCaseHandler} from "./handlers/setTestCase";
 import {startPromptTestsHandler} from "./handlers/startPromptTests";
 import {retryPromptTestsHandler} from "./handlers/retryPromptTests";
+import {deleteTestResultHandler} from "./handlers/deleteTestResult";
+
 
 admin.initializeApp();
 const db = admin.database();
@@ -44,5 +46,8 @@ export const startPromptTests = startPromptTestsHandler(
 export const retryPromptTests = retryPromptTestsHandler(
   testCaseDatabaseService,
   promptDatabaseService,
+  testResultsDatabaseService
+);
+export const deleteTestResult = deleteTestResultHandler(
   testResultsDatabaseService
 );

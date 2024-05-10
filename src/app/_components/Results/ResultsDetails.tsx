@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { RETRY_PROMPT_TESTS_API_ENDPOINT } from "@/firebase";
+import { DELETE_TEST_RESULT_API_ENDPOINT, RETRY_PROMPT_TESTS_API_ENDPOINT } from "@/firebase";
 import {
   Accordion,
   AccordionControl,
@@ -31,6 +31,8 @@ import {
   IconDots,
   IconExclamationCircle,
   IconInfoCircle,
+  IconX,
+  IconXboxA,
 } from "@tabler/icons-react";
 
 import {
@@ -45,6 +47,9 @@ import { ItemDetailsProps } from "../ListDetailView";
 import PromptText from "../PromptText";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconCopy, IconTestPipe2 } from "@tabler/icons-react";
+// import { Modal } from "@mantine/core";
+import { Modal } from "rsuite"; 
+import "rsuite/dist/rsuite.min.css"; 
 
 interface ResultsDetailsProps extends ItemDetailsProps<PromptTestResults> {
   testCases: TestCase[];
@@ -232,6 +237,45 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
     return false;
   };
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+  
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+  
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    // Perform delete action here
+    const req_body = JSON.stringify({
+      testResultId: promptTestResults.id
+    });
+    const response = await fetch(DELETE_TEST_RESULT_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: req_body,
+    });
+
+    if (!response.ok) {
+      notifications.show({
+        title: `Tests failed due to HTTP error: ${response.status} - ${response.statusText}`,
+        message: `Error: ${await response.json()}`,
+        color: "red",
+      });
+      console.error("HTTP error:", response.status);
+      return;
+    }
+    setDeleteLoading(false);
+    closeDeleteModal();
+  };
+
+
   return (
     <div>
       <CardHeader />
@@ -254,6 +298,31 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
           Retry Tests
         </Button>
       )}
+      <Button
+        leftSection={<IconX />}
+        color="red"
+        onClick={openDeleteModal}
+        loading={deleteLoading}
+      >
+        Delete
+      </Button>
+
+      <Modal
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Confirm Delete"
+        size="sm"
+      >
+        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeDeleteModal} variant="light">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} loading={deleteLoading} color="red">
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
       </Group>
       <Container fluid p={0}>
         <Title order={4}>Test Case Results</Title>

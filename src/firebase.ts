@@ -42,3 +42,6 @@ export const START_PROMPT_TESTS_API_ENDPOINT = isProduction
 export const RETRY_PROMPT_TESTS_API_ENDPOINT = isProduction
   ? "https://retryprompttests-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/retryPromptTests";
+export const DELETE_TEST_RESULT_API_ENDPOINT = isProduction
+  ? "https://deletetestresult-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/deleteTestResult";

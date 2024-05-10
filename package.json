@@ -23,7 +23,8 @@
     "next": "14.1.1",
     "react": "^18",
     "react-dom": "^18",
-    "recharts": "^2.12.3"
+    "recharts": "^2.12.3",
+    "rsuite": "^5.60.2"
   },
   "devDependencies": {
     "@types/node": "^20",
