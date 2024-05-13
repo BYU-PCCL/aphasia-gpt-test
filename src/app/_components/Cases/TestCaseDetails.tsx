@@ -1,3 +1,4 @@
+// TestCaseDetails.tsx
 import React from "react";
 
 import { useState } from "react";
@@ -31,9 +32,12 @@ import { ItemDetailsProps } from "../ListDetailView";
 import { notifications } from "@mantine/notifications";
 import { Modal } from "rsuite"; 
 import "rsuite/dist/rsuite.min.css"; 
+import UpdateButton from "../UpdateButton";
 
 const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
   item: testCase,
+  setIsUpdating,
+  isUpdating,
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -71,6 +75,10 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
     }
     setDeleteLoading(false);
     closeDeleteModal();
+  };
+
+  const handleUpdate = () => {
+    setIsUpdating(true);
   };
 
   const header = (
@@ -114,14 +122,7 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
     <Grid>
       <Grid.Col span={12}>
       <Group align="center">
-          <Button
-            leftSection={<IconEdit />}
-            color="blue"
-            // onClick={runTestsClick}
-            // loading={runTestsLoading}
-          >
-            Edit Case
-          </Button>
+          <UpdateButton onClick={handleUpdate} isUpdating={false} />
           <Button
             leftSection={<IconX />}
             color="red"

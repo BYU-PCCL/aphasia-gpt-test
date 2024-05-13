@@ -1,35 +1,12 @@
-"use client";
-
-import TestCaseDetails from "@/app/_components/Cases/TestCaseDetails";
-import TestCaseEdit from "@/app/_components/Cases/TestCaseEdit";
-import ListDetailView from "@/app/_components/ListDetailView";
-import useDataFetcher from "@/app/_hooks/useDataFetcher";
-import { GET_ALL_TEST_CASES_API_ENDPOINT } from "@/firebase";
-
-import { TestCase } from "../../../../shared/types";
-import { unixTimestampToDateString } from "../../../../shared/utils";
+// page.tsx
+'use client';
+import React, { useState } from "react";
+import CasesHelper from "./CasesHelper";
 
 const Cases: React.FC = () => {
-  const [data, isDataLoading] = useDataFetcher<TestCase>({
-    apiEndpoint: GET_ALL_TEST_CASES_API_ENDPOINT,
-    sortByProperty: "dateCreatedUtc",
-  });
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  return (
-    <ListDetailView
-      title="Test Cases"
-      data={data}
-      isDataLoading={isDataLoading}
-      ItemEdit={TestCaseEdit}
-      ItemDetails={(testCase) => <TestCaseDetails item={testCase} />}
-      getLabel={(testCase) => testCase.utterance}
-      getDescription={(testCase) =>
-        testCase.dateCreatedUtc
-          ? unixTimestampToDateString(testCase.dateCreatedUtc)
-          : ""
-      }
-    />
-  );
+  return <CasesHelper isUpdating={isUpdating} setIsUpdating={setIsUpdating} />;
 };
 
 export default Cases;

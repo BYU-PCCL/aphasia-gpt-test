@@ -1,3 +1,4 @@
+// ListDetailView.tsx
 import { useEffect, useState } from "react";
 
 import {
@@ -22,6 +23,8 @@ export type ItemEditProps<T> = {
 
 export type ItemDetailsProps<T> = {
   item: T;
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
+  isUpdating: boolean;
 };
 
 interface ListDetailViewProps<T> {
@@ -29,6 +32,8 @@ interface ListDetailViewProps<T> {
   subtitle?: string;
   data: T[] | null;
   isDataLoading: boolean;
+  isUpdating: boolean; // Add this prop
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>; // Add this prop
   ItemEdit?: React.FC<ItemEditProps<T>>;
   ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
@@ -40,6 +45,8 @@ const ListDetailView = <T,>({
   subtitle,
   data,
   isDataLoading,
+  isUpdating,
+  setIsUpdating,
   ItemEdit: EditComponent,
   ItemDetails: CardComponent,
   getLabel,
@@ -54,12 +61,17 @@ const ListDetailView = <T,>({
     }
   }, [data, selectedItem]);
 
+  const stopAllEditing = () => {
+    setIsEditing(false);
+    setIsUpdating(false);
+  }
+
   return (
     <Flex h="100%" direction={{ base: "column", sm: "row" }} gap={30}>
-      {isEditing ? (
+      {isEditing || isUpdating ? (
         EditComponent && (
           <Container size="lg" w={400}>
-            <EditComponent closeEdit={() => setIsEditing(false)} />
+            <EditComponent closeEdit={() => stopAllEditing()} />
           </Container>
         )
       ) : (
