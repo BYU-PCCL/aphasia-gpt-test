@@ -25,9 +25,15 @@ export const SET_TEST_CASE_API_ENDPOINT = isProduction
 export const GET_ALL_TEST_CASES_API_ENDPOINT = isProduction
   ? "https://getalltestcases-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTestCases";
+export const GET_TEST_CASE_API_ENDPOINT = isProduction
+  ? "https://gettestcase-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/getTestCase";
 export const DELETE_TEST_CASE_API_ENDPOINT = isProduction
   ? "https://deletetestcase-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/deleteTestCase";
+export const UPDATE_TEST_CASE_API_ENDPOINT = isProduction
+  ? "https://updatetestcase-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/updateTestCase";
 // Prompts
 export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
   ? "https://getallprompts-hzvkkbfdsa-uc.a.run.app"

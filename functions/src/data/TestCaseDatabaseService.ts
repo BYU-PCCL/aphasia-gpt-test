@@ -71,4 +71,15 @@ export class TestCaseDatabaseService {
       .child(testCaseId);
     await resultRef.remove();
   }
+
+  /**
+  * Add a test case to the Realtime DB.
+  * @param testCaseId The ID of the test case to add.
+  * @param testCase The test case with updated values.
+  * @return The updated test case.
+  */
+  public async update(testCaseId: string, testCase: TestCase): Promise<TestCase> {
+
+    return await this.databaseService.update(testCaseId, testCase);
+  }
 }
