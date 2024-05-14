@@ -1,5 +1,6 @@
 // CasesHelper.tsx
 import React from "react";
+import { useState } from "react";
 import TestCaseDetails from "@/app/_components/Cases/TestCaseDetails";
 import TestCaseEdit from "@/app/_components/Cases/TestCaseEdit";
 import ListDetailView from "@/app/_components/ListDetailView";
@@ -19,16 +20,21 @@ const CasesHelper: React.FC<CasesProps> = ({ isUpdating, setIsUpdating }) => {
     apiEndpoint: GET_ALL_TEST_CASES_API_ENDPOINT,
     sortByProperty: "dateCreatedUtc",
   });
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   return (
     <ListDetailView
       title="Test Cases"
       data={data}
+      selectedItem={selectedItem}
+      setSelectedItem={setSelectedItem}
       isDataLoading={isDataLoading}
       isUpdating={isUpdating}
       setIsUpdating={setIsUpdating}
       ItemEdit={TestCaseEdit}
-      ItemDetails={(testCase) => <TestCaseDetails item={testCase} setIsUpdating={setIsUpdating} isUpdating={isUpdating} />}
+      ItemDetails={(testCase) => <TestCaseDetails
+        item={testCase}
+        setIsUpdating={setIsUpdating} />}
       getLabel={(testCase) => testCase.utterance}
       getDescription={(testCase) =>
         testCase.dateCreatedUtc

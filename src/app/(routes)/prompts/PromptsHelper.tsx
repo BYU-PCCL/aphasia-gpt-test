@@ -1,5 +1,6 @@
 // CasesHelper.tsx
 import React from "react";
+import { useState } from "react";
 import ListDetailView from "@/app/_components/ListDetailView";
 import useDataFetcher from "@/app/_hooks/useDataFetcher";
 import PromptDetails from "@/app/_components/Prompts/PromptDetails";
@@ -19,16 +20,21 @@ const PromptsHelper: React.FC<PromptsProps> = ( {isUpdating, setIsUpdating} ) =>
         apiEndpoint: GET_ALL_PROMPTS_API_ENDPOINT,
         sortByProperty: "dateCreatedUtc",
     });
+    const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
     return (
         <ListDetailView
         title="Prompts"
         data={data}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
         isDataLoading={isDataLoading}
         isUpdating={isUpdating}
         setIsUpdating={setIsUpdating}
         ItemEdit={PromptEdit}
-        ItemDetails={(prompt) => <PromptDetails item={prompt} setIsUpdating={setIsUpdating} isUpdating={isUpdating} />}
+        ItemDetails={(prompt) => <PromptDetails
+            item={prompt}
+            setIsUpdating={setIsUpdating} />}
         getLabel={(prompt) => prompt.prompt}
         getDescription={(prompt) =>
             prompt.dateCreatedUtc

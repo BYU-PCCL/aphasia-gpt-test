@@ -24,16 +24,17 @@ export type ItemEditProps<T> = {
 export type ItemDetailsProps<T> = {
   item: T;
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
-  isUpdating: boolean;
 };
 
 interface ListDetailViewProps<T> {
   title: string;
   subtitle?: string;
   data: T[] | null;
+  selectedItem: T | null;
+  setSelectedItem: React.Dispatch<React.SetStateAction<T | null>>;
   isDataLoading: boolean;
-  isUpdating: boolean; // Add this prop
-  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>; // Add this prop
+  isUpdating: boolean;
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
   ItemEdit?: React.FC<ItemEditProps<T>>;
   ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
@@ -44,6 +45,8 @@ const ListDetailView = <T,>({
   title,
   subtitle,
   data,
+  selectedItem,
+  setSelectedItem,
   isDataLoading,
   isUpdating,
   setIsUpdating,
@@ -53,7 +56,6 @@ const ListDetailView = <T,>({
   getDescription,
 }: ListDetailViewProps<T>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
   useEffect(() => {
     if (!selectedItem) {
@@ -71,7 +73,7 @@ const ListDetailView = <T,>({
       {isEditing || isUpdating ? (
         EditComponent && (
           <Container size="lg" w={400}>
-            <EditComponent closeEdit={() => stopAllEditing()} />
+            <EditComponent item={selectedItem as T} closeEdit={() => stopAllEditing()} />
           </Container>
         )
       ) : (

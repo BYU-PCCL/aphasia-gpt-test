@@ -37,7 +37,6 @@ import UpdateButton from "../UpdateButton";
 const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
   item: testCase,
   setIsUpdating,
-  isUpdating,
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -122,7 +121,7 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
     <Grid>
       <Grid.Col span={12}>
       <Group align="center">
-          <UpdateButton onClick={handleUpdate} isUpdating={false} />
+          <UpdateButton onClick={handleUpdate} />
           <Button
             leftSection={<IconX />}
             color="red"

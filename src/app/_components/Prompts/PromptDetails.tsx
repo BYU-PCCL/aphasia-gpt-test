@@ -25,7 +25,6 @@ import UpdateButton from "../UpdateButton";
 const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
   item: prompt,
   setIsUpdating,
-  isUpdating,
 }) => {
   const [runTestsLoading, setRunTestsLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -135,7 +134,7 @@ const PromptDetails: React.FC<ItemDetailsProps<PromptCandidate>> = ({
               </Tooltip>
             )}
           </CopyButton>
-          <UpdateButton onClick={handleUpdate} isUpdating={false} />
+          <UpdateButton onClick={handleUpdate} />
           <Button
             leftSection={<IconX />}
             color="red"

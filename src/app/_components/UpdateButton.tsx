@@ -6,10 +6,9 @@ import { IconEdit } from "@tabler/icons-react";
 
 interface UpdateButtonProps {
   onClick: () => void;
-  isUpdating: boolean;
 }
 
-const UpdateButton: React.FC<UpdateButtonProps> = ({ onClick, isUpdating }) => {
+const UpdateButton: React.FC<UpdateButtonProps> = ({ onClick }) => {
   return (
     <Button
         onClick={onClick}

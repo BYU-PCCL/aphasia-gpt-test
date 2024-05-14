@@ -36,6 +36,7 @@ const TestCaseEdit: React.FC<ItemEditProps<TestCase>> = ({
       name: testCase?.bio?.name ?? "",
       age: testCase?.bio?.age.toString() ?? "",
       aboutMe: testCase?.bio?.aboutMe ?? "",
+      id: testCase?.id ?? "",
     } as FormReturnType,
     validate: {
       utterance: isNotEmpty("Utterance is required"),
