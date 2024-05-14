@@ -19,6 +19,7 @@ import {
 export type ItemEditProps<T> = {
   item?: T;
   closeEdit: () => void;
+  isUpdating: boolean;
 };
 
 export type ItemDetailsProps<T> = {
@@ -73,7 +74,7 @@ const ListDetailView = <T,>({
       {isEditing || isUpdating ? (
         EditComponent && (
           <Container size="lg" w={400}>
-            <EditComponent item={selectedItem as T} closeEdit={() => stopAllEditing()} />
+            <EditComponent item={selectedItem as T} closeEdit={() => stopAllEditing()} isUpdating={isUpdating} />
           </Container>
         )
       ) : (

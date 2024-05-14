@@ -3,7 +3,7 @@
 
 import React from "react";
 
-import { SET_TEST_CASE_API_ENDPOINT } from "@/firebase";
+import { SET_TEST_CASE_API_ENDPOINT, UPDATE_TEST_CASE_API_ENDPOINT } from "@/firebase";
 import { Fieldset, Textarea, TextInput } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 
@@ -25,6 +25,7 @@ type FormReturnType = {
 const TestCaseEdit: React.FC<ItemEditProps<TestCase>> = ({
   item: testCase = null,
   closeEdit,
+  isUpdating,
 }) => {
   const form = useForm({
     initialValues: {
@@ -36,7 +37,6 @@ const TestCaseEdit: React.FC<ItemEditProps<TestCase>> = ({
       name: testCase?.bio?.name ?? "",
       age: testCase?.bio?.age.toString() ?? "",
       aboutMe: testCase?.bio?.aboutMe ?? "",
-      id: testCase?.id ?? "",
     } as FormReturnType,
     validate: {
       utterance: isNotEmpty("Utterance is required"),
@@ -84,7 +84,7 @@ const TestCaseEdit: React.FC<ItemEditProps<TestCase>> = ({
   return (
     <ItemEdit
       closeEdit={closeEdit}
-      apiEndpoint={SET_TEST_CASE_API_ENDPOINT}
+      apiEndpoint={isUpdating ? UPDATE_TEST_CASE_API_ENDPOINT : SET_TEST_CASE_API_ENDPOINT}
       form={form}
       formatItemToSave={formatItemToSave}
     >

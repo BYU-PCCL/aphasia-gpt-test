@@ -9,7 +9,7 @@ export const updateTestCaseHandler = (
   testCaseService: TestCaseDatabaseService
 ) =>
   onRequest({cors: true}, async (req, res) => {
-    const testCaseId = req.query.testCaseId as string;
+    const testCaseId = req.body.id as string;
     const testCase = req.body;
     if (!testCaseId) {
       res.status(400).send("testCaseId is required");
