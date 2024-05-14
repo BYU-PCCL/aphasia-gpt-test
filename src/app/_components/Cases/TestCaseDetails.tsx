@@ -180,7 +180,7 @@ const TestCaseDetails: React.FC<ItemDetailsProps<TestCase>> = ({
         title="Confirm Delete"
         size="sm"
       >
-        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
+        <Modal.Body>Are you sure you want to delete this test case?</Modal.Body>
         <Modal.Footer>
           <Button onClick={closeDeleteModal} variant="light">
             Cancel
