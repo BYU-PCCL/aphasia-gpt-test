@@ -15,6 +15,7 @@ import {deletePromptHandler} from "./handlers/deletePrompt";
 import {deleteTestCaseHandler} from "./handlers/deleteTestCase";
 import {getTestCaseHandler} from "./handlers/getTestCase";
 import {updateTestCaseHandler} from "./handlers/updateTestCase";
+import {updatePromptHandler} from "./handlers/updatePrompt";
 
 
 admin.initializeApp();
@@ -43,6 +44,7 @@ export const updateTestCase = updateTestCaseHandler(testCaseDatabaseService);
 export const setPrompt = setPromptHandler(promptDatabaseService);
 export const getAllPrompts = getAllPromptsHandler(promptDatabaseService);
 export const deletePrompt = deletePromptHandler(promptDatabaseService);
+export const updatePrompt = updatePromptHandler(promptDatabaseService);
 
 // Tests
 export const getAllTests = getAllTestsHandler(testResultsDatabaseService);

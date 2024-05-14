@@ -73,8 +73,8 @@ export class TestCaseDatabaseService {
   }
 
   /**
-  * Add a test case to the Realtime DB.
-  * @param testCaseId The ID of the test case to add.
+  * Update a test case in the Realtime DB.
+  * @param testCaseId The ID of the test case to update.
   * @param testCase The test case with updated values.
   * @return The updated test case.
   */

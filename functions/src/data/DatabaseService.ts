@@ -84,7 +84,7 @@ export class DatabaseService<T extends Partial<DataItem>> {
 
   
   /**
-   * Add an item to the Realtime DB.
+   * Update an item in the Realtime DB.
    * @param itemId The ID of the item to update.
    * @param item The updated item values.
    * @return The updated item.

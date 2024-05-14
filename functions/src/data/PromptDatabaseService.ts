@@ -53,4 +53,14 @@ export class PromptDatabaseService {
       .child(promptId);
     await resultRef.remove();
   }
+
+  /**
+  * Update a prompt in the Realtime DB.
+  * @param promptId The ID of the prompt to update.
+  * @param promptData The prompt with updated values.
+  * @return The updated prompt.
+  */
+  public async update(promptId: string, promptData: PromptCandidate): Promise<PromptCandidate> {
+    return await this.databaseService.update(promptId, promptData);
+  }
 }
