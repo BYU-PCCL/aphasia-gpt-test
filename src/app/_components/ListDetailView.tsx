@@ -57,6 +57,7 @@ const ListDetailView = <T,>({
   getDescription,
 }: ListDetailViewProps<T>) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [previousSelectedItem, setPreviousSelectedItem] = useState<any | null>(null);
 
   useEffect(() => {
     if (!selectedItem) {
@@ -67,6 +68,14 @@ const ListDetailView = <T,>({
   const stopAllEditing = () => {
     setIsEditing(false);
     setIsUpdating(false);
+    setSelectedItem(previousSelectedItem);
+    setPreviousSelectedItem(null);
+  }
+
+  const handleAdd = () => {
+    setIsEditing(true);
+    setSelectedItem(null);
+    setPreviousSelectedItem(selectedItem);
   }
 
   return (
@@ -90,7 +99,7 @@ const ListDetailView = <T,>({
               <Text>{subtitle}</Text>
             </Box>
             {EditComponent && (
-              <Button onClick={() => setIsEditing(true)} mb="sm">
+              <Button onClick={handleAdd} mb="sm">
                 Add
               </Button>
             )}
