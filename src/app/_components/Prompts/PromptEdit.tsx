@@ -1,28 +1,18 @@
 import { SET_PROMPT_API_ENDPOINT, UPDATE_PROMPT_API_ENDPOINT } from "@/firebase";
 import {
-  Flex,
+  Box,
+  Container,
   Group,
   List,
   ListItem,
   Paper,
-  rem,
-  Stack,
   Text,
   Textarea,
-  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {
-  IconAlertTriangle,
-  IconCircleCheck,
-  IconCircleDashed,
-} from "@tabler/icons-react";
+import { IconAlertTriangle } from "@tabler/icons-react";
 
-import {
-  encodedOptionalPromptParams,
-  encodedRequiredPromptParams,
-  PromptCandidate,
-} from "../../../../shared/types";
+import { encodedPromptParams, PromptCandidate } from "../../../../shared/types";
 import ItemEdit from "../ItemEdit";
 import { ItemEditProps } from "../ListDetailView";
 
@@ -45,7 +35,7 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
           return "Prompt is required";
         }
         const missingParams: string[] = [];
-        encodedRequiredPromptParams.forEach((param) => {
+        encodedPromptParams.forEach((param) => {
           if (!value.includes(param)) {
             missingParams.push(param);
           }
@@ -63,54 +53,20 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
     id: prompt?.id,
   });
 
-  const checkedIfIncludedList = (params: string[]) => (
-    <List withPadding size="sm" center>
-      <Flex wrap="wrap">
-        {params.map((param) => (
-          <ListItem
-            key={param}
-            w="50%"
-            icon={
-              form.values.prompt.includes(param) ? (
-                <IconCircleCheck style={{ width: rem(20), height: rem(20) }} />
-              ) : (
-                <IconCircleDashed style={{ width: rem(20), height: rem(20) }} />
-              )
-            }
-          >
-            {param}
-          </ListItem>
-        ))}
-      </Flex>
-    </List>
-  );
-
-  const parameterUsage = (
-    <Stack gap={1}>
-      <Text fw={700} size="sm">
-        Required Parameters
-      </Text>
-      {checkedIfIncludedList(encodedRequiredPromptParams)}
-      <Text fw={700} size="sm">
-        Optional Parameters
-      </Text>
-      {checkedIfIncludedList(encodedOptionalPromptParams)}
-    </Stack>
-  );
-
   return (
     <ItemEdit
       closeEdit={closeEdit}
       apiEndpoint={isUpdating ? UPDATE_PROMPT_API_ENDPOINT : SET_PROMPT_API_ENDPOINT}
-      title="Prompt"
       form={form}
       formatItemToSave={formatItemToSave}
     >
       {(form) => (
         <>
-          {parameterUsage}
           <Textarea
             label="Prompt"
+            description={`Prompt template must use the following parameters: ${encodedPromptParams.join(
+              ", "
+            )}`}
             placeholder="Enter your prompt here"
             withAsterisk
             minRows={10}
@@ -129,8 +85,7 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
             <List pl="lg">
               <ListItem>
                 Only 1 response is explicitly requested from the LLM in the API
-                request, so the prompt itself should elicit multiple
-                completions.
+                request
               </ListItem>
               <ListItem>
                 Newlines (&quot;\n&quot;) separate completions

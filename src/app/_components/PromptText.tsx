@@ -3,7 +3,7 @@ import React from "react";
 
 import { Text } from "@mantine/core";
 
-import { encodedAllPromptParams, PromptCandidate } from "../../../shared/types";
+import { encodedPromptParams, PromptCandidate } from "../../../shared/types";
 
 interface Props {
   prompt: PromptCandidate;
@@ -17,7 +17,7 @@ const PromptText: React.FC<Props> = ({ prompt }) => {
           return (
             <Text
               key={j}
-              fw={encodedAllPromptParams.includes(word) ? 700 : 300}
+              fw={encodedPromptParams.includes(word) ? 700 : 300}
               span
             >
               {word}{" "}
