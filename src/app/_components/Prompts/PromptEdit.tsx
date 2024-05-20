@@ -1,4 +1,4 @@
-import { SET_PROMPT_API_ENDPOINT } from "@/firebase";
+import { SET_PROMPT_API_ENDPOINT, UPDATE_PROMPT_API_ENDPOINT } from "@/firebase";
 import {
   Flex,
   Group,
@@ -33,6 +33,7 @@ type FormReturnType = {
 const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
   item: prompt = null,
   closeEdit,
+  isUpdating,
 }) => {
   const form = useForm({
     initialValues: {
@@ -59,6 +60,7 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
 
   const formatItemToSave = (formValues: FormReturnType) => ({
     prompt: formValues.prompt,
+    id: prompt?.id,
   });
 
   const checkedIfIncludedList = (params: string[]) => (
@@ -99,7 +101,7 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
   return (
     <ItemEdit
       closeEdit={closeEdit}
-      apiEndpoint={SET_PROMPT_API_ENDPOINT}
+      apiEndpoint={isUpdating ? UPDATE_PROMPT_API_ENDPOINT : SET_PROMPT_API_ENDPOINT}
       title="Prompt"
       form={form}
       formatItemToSave={formatItemToSave}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { DELETE_TEST_RESULT_API_ENDPOINT, RETRY_PROMPT_TESTS_API_ENDPOINT } from "@/firebase";
 import {
   Accordion,
   AccordionControl,
@@ -30,6 +31,7 @@ import {
   IconDots,
   IconExclamationCircle,
   IconInfoCircle,
+  IconX,
 } from "@tabler/icons-react";
 
 import {
@@ -42,6 +44,11 @@ import {
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { ItemDetailsProps } from "../ListDetailView";
 import PromptText from "../PromptText";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconCopy, IconTestPipe2 } from "@tabler/icons-react";
+// import { Modal } from "@mantine/core";
+import { Modal } from "rsuite"; 
+import "rsuite/dist/rsuite.min.css"; 
 
 interface ResultsDetailsProps extends ItemDetailsProps<PromptTestResults> {
   testCases: TestCase[];
@@ -156,6 +163,118 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
     </Group>
   );
 
+  const [retryTestsLoading, setRetryTestsLoading] = useState(false);
+
+  const retryTestsClick = async () => {
+    setRetryTestsLoading(true);
+    try {
+      if (testCases.length === 0) {
+        notifications.show({
+          title: "Tests failed",
+          message: "No test cases found.",
+          color: "red",
+        });
+        return;
+      }
+
+      let failedTestResults = [];
+      for (const testCaseId in promptTestResults.testCaseResults) {
+        if (
+          promptTestResults.testCaseResults[testCaseId].status ===
+          TestResultsStatus.ERROR
+        ) {
+          failedTestResults.push(testCaseId);
+        }
+      }
+
+      const req_body = JSON.stringify({
+        resultsId: promptTestResults.id,
+        testCasesIds: failedTestResults
+      });
+      const response = await fetch(RETRY_PROMPT_TESTS_API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: req_body,
+      });
+
+      if (!response.ok) {
+        notifications.show({
+          title: `Tests failed due to HTTP error: ${response.status} - ${response.statusText}`,
+          message: `Error: ${await response.json()}`,
+          color: "red",
+        });
+        console.error("HTTP error:", response.status);
+        return;
+      }
+
+      // console.log(response.json()); // TODO: Do something with this
+      notifications.show({
+        title: "Tests started",
+        message: 'Monitor the results in the "Results" tab.',
+        color: "teal",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      notifications.show({
+        title: "Tests failed",
+        message: (error as Error).message ?? "An unknown error occurred.",
+        color: "red",
+      });
+    }
+    setRetryTestsLoading(false);
+  };
+
+  const hasError = (testResults: PromptTestResults): boolean => {
+    const testCaseResults = testResults.testCaseResults;
+    for (const testCaseId in testCaseResults) {
+      if (testCaseResults[testCaseId].status === TestResultsStatus.ERROR) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+  
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+  
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    // Perform delete action here
+    const req_body = JSON.stringify({
+      testResultId: promptTestResults.id
+    });
+    const response = await fetch(DELETE_TEST_RESULT_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: req_body,
+    });
+
+    if (!response.ok) {
+      notifications.show({
+        title: `Tests failed due to HTTP error: ${response.status} - ${response.statusText}`,
+        message: `Error: ${await response.json()}`,
+        color: "red",
+      });
+      console.error("HTTP error:", response.status);
+      return;
+    }
+    setDeleteLoading(false);
+    closeDeleteModal();
+  };
+
+
   return (
     <div>
       <CardHeader />
@@ -167,6 +286,34 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
         </Text>
       </Spoiler>
       <Divider mt="sm" mb="sm" />
+      <Group align="center">
+      {hasError(promptTestResults) && (
+        <Button
+          leftSection={<IconTestPipe2 />}
+          color="teal"
+          onClick={retryTestsClick}
+          loading={retryTestsLoading}
+        >
+          Retry Tests
+        </Button>
+      )}
+      {!hasError(promptTestResults) && (
+        <Button
+          leftSection={<IconTestPipe2 />}
+          disabled
+        >
+          Retry Tests
+      </Button>
+      )}
+      <Button
+        leftSection={<IconX />}
+        color="red"
+        onClick={openDeleteModal}
+        loading={deleteLoading}
+      >
+        Delete
+      </Button>
+      </Group>
       <Container fluid p={0}>
         <Title order={4}>Test Case Results</Title>
         <Accordion variant="separated" multiple>
@@ -229,6 +376,22 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
           })}
         </Accordion>
       </Container>
+      <Modal
+        open={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        title="Confirm Delete"
+        size="sm"
+      >
+        <Modal.Body>Are you sure you want to delete this batch of results?</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={closeDeleteModal} variant="light">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} loading={deleteLoading} color="red">
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

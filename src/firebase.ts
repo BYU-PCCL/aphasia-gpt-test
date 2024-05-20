@@ -25,6 +25,15 @@ export const SET_TEST_CASE_API_ENDPOINT = isProduction
 export const GET_ALL_TEST_CASES_API_ENDPOINT = isProduction
   ? "https://getalltestcases-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/getAllTestCases";
+export const GET_TEST_CASE_API_ENDPOINT = isProduction
+  ? "https://gettestcase-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/getTestCase";
+export const DELETE_TEST_CASE_API_ENDPOINT = isProduction
+  ? "https://deletetestcase-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/deleteTestCase";
+export const UPDATE_TEST_CASE_API_ENDPOINT = isProduction
+  ? "https://updatetestcase-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/updateTestCase";
 // Prompts
 export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
   ? "https://getallprompts-hzvkkbfdsa-uc.a.run.app"
@@ -32,6 +41,12 @@ export const GET_ALL_PROMPTS_API_ENDPOINT = isProduction
 export const SET_PROMPT_API_ENDPOINT = isProduction
   ? "https://setprompt-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/setPrompt";
+export const DELETE_PROMPT_API_ENDPOINT = isProduction
+  ? "https://deleteprompt-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/deletePrompt";
+export const UPDATE_PROMPT_API_ENDPOINT = isProduction
+  ? "https://updateprompt-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/updatePrompt";
 // Tests
 export const GET_ALL_TESTS_API_ENDPOINT = isProduction
   ? "https://getalltests-hzvkkbfdsa-uc.a.run.app"
@@ -39,3 +54,9 @@ export const GET_ALL_TESTS_API_ENDPOINT = isProduction
 export const START_PROMPT_TESTS_API_ENDPOINT = isProduction
   ? "https://startprompttests-hzvkkbfdsa-uc.a.run.app"
   : "http://127.0.0.1:5000/brocas-userdb/us-central1/startPromptTests";
+export const RETRY_PROMPT_TESTS_API_ENDPOINT = isProduction
+  ? "https://retryprompttests-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/retryPromptTests";
+export const DELETE_TEST_RESULT_API_ENDPOINT = isProduction
+  ? "https://deletetestresult-hzvkkbfdsa-uc.a.run.app"
+  : "http://127.0.0.1:5000/brocas-userdb/us-central1/deleteTestResult";

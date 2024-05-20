@@ -42,4 +42,25 @@ export class PromptDatabaseService {
   public async add(prompt: PromptCandidate): Promise<PromptCandidate> {
     return await this.databaseService.add(prompt);
   }
+
+  /**
+  * Delete a prompt record from the Realtime DB.
+  * @param promptId The ID of the prompt record.
+  */
+  public async delete(promptId: string): Promise<void> {
+    const resultRef = this.databaseService
+      .getDictRef()
+      .child(promptId);
+    await resultRef.remove();
+  }
+
+  /**
+  * Update a prompt in the Realtime DB.
+  * @param promptId The ID of the prompt to update.
+  * @param promptData The prompt with updated values.
+  * @return The updated prompt.
+  */
+  public async update(promptId: string, promptData: PromptCandidate): Promise<PromptCandidate> {
+    return await this.databaseService.update(promptId, promptData);
+  }
 }

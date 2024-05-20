@@ -13,7 +13,7 @@ Firebase functions are defined in the [functions](./functions/) directory.
 To make successfull HTTP requests to OpenAI (GPT completions) and Hugging Face (embeddings), you will need to set the following environment variables in a `.env` file in the [functions](./functions/) directory:
 
 - `OPENAI_API_KEY`
-- `HGGINGFACE_API_TOKEN`
+- `HUGGINGFACE_API_TOKEN`
 
 These will also be required to be set in order to deploy the Firebase functions.
 

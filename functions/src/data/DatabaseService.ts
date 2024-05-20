@@ -82,6 +82,38 @@ export class DatabaseService<T extends Partial<DataItem>> {
     return item;
   }
 
+  
+  /**
+   * Update an item in the Realtime DB.
+   * @param itemId The ID of the item to update.
+   * @param item The updated item values.
+   * @return The updated item.
+   */
+  public async update(itemId: string, item: Partial<T>): Promise<T> {
+    logger.info(`Updating an item (type ${typeof item}) with id: ${itemId} in the Realtime DB`, item);
+
+    const curDateTime = getUnixTimestamp();
+    item.dateUpdatedUtc = curDateTime;
+
+    // Create an object with the properties to update
+    const updates: Partial<T> = {};
+    for (const key in item) {
+      if (item.hasOwnProperty(key)) {
+        updates[`${key}` as keyof T] = item[key];
+      }
+    }
+
+    // Update the specific child with the new values
+    await this.getDictRef().child(itemId).update(updates);
+
+    // Log success message
+    logger.info("Item updated in Realtime DB", itemId);
+
+    // Return the updated item
+    return { ...(await this.get(itemId)), ...(item as T) };
+}
+
+
   /**
    * Get a Reference to the Realtime DB dictionary for type T.
    * @return The reference to the dictionary.

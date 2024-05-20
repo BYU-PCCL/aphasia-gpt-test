@@ -1,3 +1,4 @@
+// ListDetailView.tsx
 import { useEffect, useState } from "react";
 
 import {
@@ -18,17 +19,23 @@ import {
 export type ItemEditProps<T> = {
   item?: T;
   closeEdit: () => void;
+  isUpdating: boolean;
 };
 
 export type ItemDetailsProps<T> = {
   item: T;
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 interface ListDetailViewProps<T> {
   title: string;
   subtitle?: string;
   data: T[] | null;
+  selectedItem: T | null;
+  setSelectedItem: React.Dispatch<React.SetStateAction<T | null>>;
   isDataLoading: boolean;
+  isUpdating: boolean;
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
   ItemEdit?: React.FC<ItemEditProps<T>>;
   ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
@@ -39,14 +46,17 @@ const ListDetailView = <T,>({
   title,
   subtitle,
   data,
+  selectedItem,
+  setSelectedItem,
   isDataLoading,
+  isUpdating,
+  setIsUpdating,
   ItemEdit: EditComponent,
   ItemDetails: CardComponent,
   getLabel,
   getDescription,
 }: ListDetailViewProps<T>) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
   useEffect(() => {
     if (!selectedItem) {
@@ -54,12 +64,17 @@ const ListDetailView = <T,>({
     }
   }, [data, selectedItem]);
 
+  const stopAllEditing = () => {
+    setIsEditing(false);
+    setIsUpdating(false);
+  }
+
   return (
     <Flex h="100%" direction={{ base: "column", sm: "row" }} gap={30}>
-      {isEditing ? (
+      {isEditing || isUpdating ? (
         EditComponent && (
           <Container size="lg" w={400}>
-            <EditComponent closeEdit={() => setIsEditing(false)} />
+            <EditComponent item={selectedItem as T} closeEdit={() => stopAllEditing()} isUpdating={isUpdating} />
           </Container>
         )
       ) : (
