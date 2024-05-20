@@ -10,15 +10,27 @@ export function isPromptCandidate(
   return promptCandidate && promptCandidate.prompt;
 }
 
-export const promptParams = [
+export const requiredPromptParams = ["utterance"];
+
+export const optionalPromptParams = [
   "name",
   "age",
   "about_me",
   "setting",
   "conversation_type",
   "tone",
-  "utterance",
 ];
-export const encodedPromptParams: string[] = promptParams.map(
-  (param) => `{${param}}`
+
+export const getPromptParamEncoding = (param: string) => `{${param}}`;
+
+export const encodedAllPromptParams: string[] = requiredPromptParams
+  .concat(optionalPromptParams)
+  .map(getPromptParamEncoding);
+
+export const encodedRequiredPromptParams: string[] = requiredPromptParams.map(
+  getPromptParamEncoding
+);
+
+export const encodedOptionalPromptParams: string[] = optionalPromptParams.map(
+  getPromptParamEncoding
 );
