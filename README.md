@@ -58,6 +58,18 @@ You can view the Emulator UI at [http://localhost:4000](http://localhost:4000).
 
 After running the Firebase Local Emulator Suite, you can attach a debugger using the configuration in `.vscode/launch.json` (press `F5` in VSCode). Debugging configurations in other IDEs must be set up manually.
 
+#### If Ports Are Already in Use
+
+Sometimes the Firebase Emulator Suite will continue to run (on the ports defined in [firebase.json](./firebase.json)) if the emulator isn't stopped properly. If you can get an error that the ports are already in use, you can quickly kill the processes using the following command from the root directory:
+
+```shell
+npm run kill:ports
+```
+
+#### Additional Information
+
+There is additional information in [functions/README.md](./functions/README.md).
+
 ## Deploying the App
 
 ### React App
