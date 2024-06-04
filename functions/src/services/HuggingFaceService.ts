@@ -1,4 +1,5 @@
 import {HttpError} from "../httpUtils";
+const fetch = require('node-fetch');
 
 /**
  * A service to interact with the Hugging Face API.
