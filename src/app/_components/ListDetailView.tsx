@@ -40,7 +40,7 @@ interface ListDetailViewProps<T> {
   ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
   getDescription: (item: T) => string;
-  getScore: (item: T) => number | null;
+  getScore?: (item: T) => number | null;
 }
 
 const ListDetailView = <T,>({
@@ -117,7 +117,7 @@ const ListDetailView = <T,>({
                         label={<Text lineClamp={3}>{getLabel(item)}</Text>}
                         description={
                           getDescription(item) === "Complete"
-                            ? `${getDescription(item)} | ${getScore(item)}`
+                            ? `${getDescription(item)}${getScore ? ` | ${getScore(item)}` : ""}`
                             : getDescription(item)
                         }
                       />
