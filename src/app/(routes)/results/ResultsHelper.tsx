@@ -13,6 +13,8 @@ import {
   PromptCandidate,
   PromptTestResults,
   TestCase,
+  TestCaseResult,
+  TestResultsStatus
 } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { getPromptTestResultsStatus } from "../../../../shared/utils/statusUtils";
@@ -36,6 +38,24 @@ const ResultsHelper: React.FC<ResultsProps> = ( {isUpdating, setIsUpdating} ) =>
     sortByProperty: "dateCreatedUtc",
   });
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+
+  function calculateAverageCosineSimilarityScore(
+    testCaseResults: TestCaseResult[]
+  ): number | null {
+    const scores: number[] = Object.values(testCaseResults)
+      .filter((result) => result.status === TestResultsStatus.COMPLETE)
+      .map((result) => result.cosineSimilarityScore)
+      .filter(
+        (score): score is number => score !== null && score !== undefined
+      );
+
+    if (scores.length === 0) {
+      return null;
+    }
+
+    const average = scores.reduce((acc, score) => acc + score, 0) / scores.length;
+    return parseFloat(average.toFixed(3));
+  }
 
   return (
     <ListDetailView
@@ -61,6 +81,7 @@ const ResultsHelper: React.FC<ResultsProps> = ( {isUpdating, setIsUpdating} ) =>
           : test.id ?? "ERROR displaying test date"
       }
       getDescription={(test) => getPromptTestResultsStatus(test)}
+      getScore={(test) => calculateAverageCosineSimilarityScore(test.testCaseResults)}
     />
   );
 };

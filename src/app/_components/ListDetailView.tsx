@@ -40,6 +40,7 @@ interface ListDetailViewProps<T> {
   ItemDetails: (item: T) => React.ReactNode;
   getLabel: (item: T) => string;
   getDescription: (item: T) => string;
+  getScore: (item: T) => number | null;
 }
 
 const ListDetailView = <T,>({
@@ -55,6 +56,7 @@ const ListDetailView = <T,>({
   ItemDetails: CardComponent,
   getLabel,
   getDescription,
+  getScore,
 }: ListDetailViewProps<T>) => {
   const [isEditing, setIsEditing] = useState(false);
   const [previousSelectedItem, setPreviousSelectedItem] = useState<any | null>(null);
@@ -113,7 +115,11 @@ const ListDetailView = <T,>({
                         onClick={() => setSelectedItem(item)}
                         active={selectedItem === item}
                         label={<Text lineClamp={3}>{getLabel(item)}</Text>}
-                        description={getDescription(item)}
+                        description={
+                          getDescription(item) === "Complete"
+                            ? `${getDescription(item)} | ${getScore(item)}`
+                            : getDescription(item)
+                        }
                       />
                     ))}
                   </>
