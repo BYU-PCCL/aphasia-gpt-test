@@ -10,6 +10,21 @@ import { GET_ALL_TEST_CASES_API_ENDPOINT } from "@/firebase";
 import { TestCase } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
 
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Loader,
+  NavLink,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+
 interface CasesProps {
   isUpdating: boolean;
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +50,12 @@ const CasesHelper: React.FC<CasesProps> = ({ isUpdating, setIsUpdating }) => {
       ItemDetails={(testCase) => <TestCaseDetails
         item={testCase}
         setIsUpdating={setIsUpdating} />}
-      getLabel={(testCase) => testCase.utterance}
+      // getLabel={(testCase) => testCase.utterance}
+      getLabel={(testCase) => (
+        <Box>
+          <Text lineClamp={3}>{testCase.utterance}</Text>
+        </Box>
+      )}
       getDescription={(testCase) =>
         testCase.dateCreatedUtc
           ? unixTimestampToDateString(testCase.dateCreatedUtc)

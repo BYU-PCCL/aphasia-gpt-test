@@ -10,6 +10,21 @@ import { GET_ALL_PROMPTS_API_ENDPOINT } from "@/firebase";
 import { PromptCandidate } from "../../../../shared/types";
 import { unixTimestampToDateString } from "../../../../shared/utils";
 
+import {
+    Box,
+    Button,
+    Center,
+    Container,
+    Flex,
+    Loader,
+    NavLink,
+    Paper,
+    ScrollArea,
+    Stack,
+    Text,
+    Title,
+  } from "@mantine/core";
+
 interface PromptsProps {
   isUpdating: boolean;
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +50,13 @@ const PromptsHelper: React.FC<PromptsProps> = ( {isUpdating, setIsUpdating} ) =>
         ItemDetails={(prompt) => <PromptDetails
             item={prompt}
             setIsUpdating={setIsUpdating} />}
-        getLabel={(prompt) => prompt.prompt}
+        getLabel={(prompt) => (
+            <Box>
+                <Text lineClamp={3}>
+                {prompt.promptName ? prompt.promptName : prompt.prompt}
+                </Text>
+            </Box>
+            )}
         getDescription={(prompt) =>
             prompt.dateCreatedUtc
             ? unixTimestampToDateString(prompt.dateCreatedUtc)

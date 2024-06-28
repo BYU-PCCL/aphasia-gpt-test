@@ -63,7 +63,9 @@ export class TestResultsDatabaseService {
     model: string,
     embeddingsModelName: string,
     temperature: number,
-    maxTokens: number
+    maxTokens: number,
+    promptName: string,
+    prompt: string
   ): Promise<PromptTestResults> {
     const testCaseResults: Record<string, TestCaseResult> = {};
     for (const testCase of testCases) {
@@ -82,6 +84,8 @@ export class TestResultsDatabaseService {
       temperature: temperature,
       maxTokens: maxTokens,
       testCaseResults: testCaseResults,
+      promptName: promptName,
+      prompt: prompt
     };
 
     return this.databaseService.add(promptTestResults);

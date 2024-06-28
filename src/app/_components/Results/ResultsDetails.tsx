@@ -115,7 +115,7 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
 
   const prompt: PromptCandidate | null =
     prompts.find((p) => p.id === promptTestResults.promptId) ?? null;
-
+  
   const getTestCase = (testCaseId: string) =>
     testCases.find((tc) => tc.id === testCaseId);
 
@@ -135,6 +135,7 @@ const ResultsDetails: React.FC<ResultsDetailsProps> = ({
     <Group justify="space-between" align="center">
       <Group>
         <Title order={3}>
+          {prompt ? `${prompt.promptName} | ` : ""}
           {averageCosineSimilarityScore(promptTestResults.testCaseResults)}
         </Title>
         <Box>

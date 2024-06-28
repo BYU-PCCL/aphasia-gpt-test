@@ -38,7 +38,7 @@ interface ListDetailViewProps<T> {
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
   ItemEdit?: React.FC<ItemEditProps<T>>;
   ItemDetails: (item: T) => React.ReactNode;
-  getLabel: (item: T) => string;
+  getLabel: (item: T) => JSX.Element;
   getDescription: (item: T) => string;
   getScore?: (item: T) => number | null;
 }
@@ -114,11 +114,11 @@ const ListDetailView = <T,>({
                         key={index}
                         onClick={() => setSelectedItem(item)}
                         active={selectedItem === item}
-                        label={<Text lineClamp={3}>{getLabel(item)}</Text>}
+                        label={getLabel(item)}
                         description={
                           getDescription(item) === "Complete"
                             ? `${getDescription(item)}${getScore ? ` | ${getScore(item)}` : ""}`
-                            : getDescription(item)
+                            : `${getDescription(item)}`
                         }
                       />
                     ))}

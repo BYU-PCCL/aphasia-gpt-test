@@ -19,6 +19,21 @@ import {
 import { unixTimestampToDateString } from "../../../../shared/utils";
 import { getPromptTestResultsStatus } from "../../../../shared/utils/statusUtils";
 
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Loader,
+  NavLink,
+  Paper,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+
 interface ResultsProps {
     isUpdating: boolean;
     setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -57,6 +72,30 @@ const ResultsHelper: React.FC<ResultsProps> = ( {isUpdating, setIsUpdating} ) =>
     return parseFloat(average.toFixed(3));
   }
 
+  function prepareLabel(test: PromptTestResults): JSX.Element {
+    // Get the dateTime
+    const dateTime = test.dateCreatedUtc
+      ? unixTimestampToDateString(test.dateCreatedUtc)
+      : test.id ?? "ERROR displaying test date";
+    // Get the promptName
+    const promptName = test.promptName;
+    if (!promptName) {
+      // Render without promptName
+      return (
+        <Box>
+          <Text lineClamp={3}>{dateTime}</Text>
+        </Box>
+      );
+    }
+    // Render with promptName available
+    return (
+      <Box>
+        <Text>{promptName}</Text>
+        <Text lineClamp={3}>{dateTime}</Text>
+      </Box>
+    );
+  }
+
   return (
     <ListDetailView
       title="Results"
@@ -75,11 +114,7 @@ const ResultsHelper: React.FC<ResultsProps> = ( {isUpdating, setIsUpdating} ) =>
           setIsUpdating={() => {}}
         />
       )}
-      getLabel={(test) =>
-        test.dateCreatedUtc
-          ? unixTimestampToDateString(test.dateCreatedUtc)
-          : test.id ?? "ERROR displaying test date"
-      }
+      getLabel={(test) => prepareLabel(test)}
       getDescription={(test) => getPromptTestResultsStatus(test)}
       getScore={(test) => calculateAverageCosineSimilarityScore(test.testCaseResults)}
     />

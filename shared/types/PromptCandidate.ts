@@ -2,6 +2,7 @@ import { DataItem } from "./";
 
 export interface PromptCandidate extends Partial<DataItem> {
   prompt: string;
+  promptName: string;
 }
 
 export function isPromptCandidate(

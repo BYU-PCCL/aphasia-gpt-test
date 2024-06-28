@@ -23,6 +23,10 @@ export interface PromptTestResults extends Partial<DataItem> {
   maxTokens: number;
   /** A dictionary of test case Firebase ids and their results */
   testCaseResults: Record<string, TestCaseResult>;
+  /** The name of the prompt that was used */
+  promptName?: string;
+  /** The prompt used */
+  prompt?: string;
 }
 
 export interface TestCaseResult extends Partial<DataItem> {

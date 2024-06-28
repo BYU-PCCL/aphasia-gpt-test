@@ -132,7 +132,9 @@ export const retryPromptTestsHandler = (
         OPENAI_MODEL,
         EMBEDDING_MODEL_NAME,
         TEMPERATURE,
-        MAX_TOKENS
+        MAX_TOKENS,
+        prompt.promptName,
+        prompt.prompt
       );
 
     if (!promptTestResults.id) {

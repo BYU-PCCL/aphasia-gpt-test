@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   Textarea,
+  TextInput,
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -28,6 +29,7 @@ import { ItemEditProps } from "../ListDetailView";
 
 type FormReturnType = {
   prompt: string;
+  promptName: string;
 };
 
 const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
@@ -38,6 +40,7 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
   const form = useForm({
     initialValues: {
       prompt: prompt?.prompt ?? "",
+      promptName: prompt?.promptName ?? "",
     } as FormReturnType,
     validate: {
       prompt: (value) => {
@@ -54,12 +57,14 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
           ? `Missing parameters: ${missingParams.join(", ")}`
           : null;
       },
+      promptName: (value) => (!value.trim() ? "Prompt name is required" : null),
     },
     validateInputOnBlur: true,
   });
 
   const formatItemToSave = (formValues: FormReturnType) => ({
     prompt: formValues.prompt,
+    promptName: formValues.promptName,
     id: prompt?.id,
   });
 
@@ -109,6 +114,12 @@ const PromptEdit: React.FC<ItemEditProps<PromptCandidate>> = ({
       {(form) => (
         <>
           {parameterUsage}
+          <TextInput
+            label="Prompt Name"
+            placeholder="Enter the prompt name"
+            withAsterisk
+            {...form.getInputProps("promptName")}
+          />
           <Textarea
             label="Prompt"
             placeholder="Enter your prompt here"
