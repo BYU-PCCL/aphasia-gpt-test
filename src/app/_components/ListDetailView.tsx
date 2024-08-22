@@ -101,7 +101,13 @@ const ListDetailView = <T,>({
               <Text>{subtitle}</Text>
             </Box>
             {EditComponent && (
-              <Button onClick={handleAdd} mb="sm">
+              <Button onClick={handleAdd} mb="sm" style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+                flexShrink: 0,      // Ensuring the button doesn't shrink
+                minHeight: "40px",   // Set a minimum height
+              }}>
                 Add
               </Button>
             )}
